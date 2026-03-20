@@ -11,6 +11,18 @@ body {
   color: white;
   font-family: monospace;
   overflow: hidden;
+  cursor: crosshair;
+}
+
+/* FILM GRAIN */
+body::after {
+  content: "";
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: url('https://grainy-gradients.vercel.app/noise.svg');
+  opacity: 0.05;
+  pointer-events: none;
 }
 
 /* INTRO */
@@ -24,11 +36,12 @@ body {
   align-items: center;
   cursor: pointer;
   z-index: 10;
+  transition: 0.5s;
 }
 
 #intro h1 {
   opacity: 0.7;
-  letter-spacing: 5px;
+  letter-spacing: 6px;
   animation: pulse 2s infinite;
 }
 
@@ -56,55 +69,90 @@ body {
 }
 
 .left {
-  border-right: 1px solid rgba(255,255,255,0.1);
+  border-right: 1px solid rgba(255,255,255,0.08);
 }
 
 .side:hover {
   background: rgba(255,255,255,0.08);
-  transform: scale(1.03);
+  transform: scale(1.04);
 }
 
 h1 {
   letter-spacing: 3px;
 }
 
+p {
+  margin: 5px 0;
+}
+
+.sub {
+  opacity: 0.5;
+  font-size: 12px;
+}
+
+/* BUTTON */
 button {
-  margin-top: 10px;
+  margin-top: 12px;
   padding: 10px 20px;
   background: none;
   border: 1px solid white;
   color: white;
   cursor: pointer;
+  transition: 0.3s;
 }
 
 button:hover {
   background: white;
   color: black;
+  transform: scale(1.05);
+}
+
+/* MUSIC BUTTON */
+#toggleMusic {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  font-size: 12px;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .left {
+    border-right: none;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
 }
 </style>
 </head>
 
 <body>
 
-<!-- INTRO SCREEN -->
+<!-- MUSIC BUTTON -->
+<button id="toggleMusic" onclick="toggleMusic()">MUSIC</button>
+
+<!-- INTRO -->
 <div id="intro" onclick="enterSite()">
-  <h1>CLICK TO ENTER</h1>
+  <h1>ENTER SYSTEM</h1>
 </div>
 
-<!-- MAIN CONTENT -->
+<!-- MAIN -->
 <div class="container" id="main">
 
 <div class="side left">
   <h1>ESPORT</h1>
   <p>PSYCHOSIS PLAYER</p>
-  <p style="opacity:0.5;">COMPETITIVE TFT</p>
+  <p class="sub">COMPETITIVE TFT</p>
   <button onclick="window.open('https://discord.gg/2W96ej7B')">JOIN</button>
 </div>
 
 <div class="side">
   <h1>ICT TRADER</h1>
-  <p>ICT STRATEGY</p>
-  <p style="opacity:0.5;">XAUUSD | LIQUIDITY</p>
+  <p>SMART MONEY</p>
+  <p class="sub">XAUUSD | LIQUIDITY</p>
   <button onclick="window.open('https://vn.tradingview.com/chart/qjYmgyGN/?symbol=OANDA%3AXAUUSD')">SIGNAL</button>
 </div>
 
@@ -116,6 +164,8 @@ button:hover {
 </audio>
 
 <script>
+let isPlaying = false;
+
 function enterSite() {
   document.getElementById("intro").style.opacity = "0";
 
@@ -123,7 +173,20 @@ function enterSite() {
     document.getElementById("intro").style.display = "none";
     document.getElementById("main").style.opacity = "1";
     document.getElementById("music").play();
+    isPlaying = true;
   }, 500);
+}
+
+function toggleMusic() {
+  let music = document.getElementById("music");
+
+  if (isPlaying) {
+    music.pause();
+    isPlaying = false;
+  } else {
+    music.play();
+    isPlaying = true;
+  }
 }
 </script>
 
