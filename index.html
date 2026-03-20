@@ -7,17 +7,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
+* {
+  transition: all 0.3s ease;
+}
+
 body {
   margin: 0;
   font-family: monospace;
   color: white;
   overflow: hidden;
-  background: black;
   cursor: none;
+  background: url("https://images.unsplash.com/photo-1534438327276-14e5300c3a48") no-repeat center/cover;
 }
 
 /* VIDEO */
-video {
 #bgVideo {
   position: fixed;
   top: 0;
@@ -26,8 +29,6 @@ video {
   height: 100%;
   object-fit: cover;
   z-index: -3;
-
-  /* nhẹ thôi đừng giết nó */
   filter: brightness(0.7) contrast(1.2);
 }
 
@@ -40,10 +41,6 @@ video {
   z-index: -1;
 }
 
-body {
-  background: url("https://images.unsplash.com/photo-1534438327276-14e5300c3a48") no-repeat center/cover;
-}
-  
 /* PARTICLES */
 #particles {
   position: fixed;
@@ -63,7 +60,6 @@ body {
   align-items: center;
   z-index: 10;
   cursor: pointer;
-  transition: 0.8s;
 }
 
 #intro.hide {
@@ -75,22 +71,12 @@ body {
   animation: glitch 1s infinite;
 }
 
-/* GLITCH */
 @keyframes glitch {
   0% {text-shadow: 2px 0 red;}
   50% {text-shadow: -2px 0 blue;}
   100% {text-shadow: 2px 0 red;}
 }
 
-/* LINE */
-.line {
-  width: 200px;
-  height: 1px;
-  background: cyan;
-  margin: 10px auto;
-  box-shadow: 0 0 10px cyan;
-}
-  
 /* HERO */
 .hero {
   position: absolute;
@@ -99,7 +85,6 @@ body {
   text-align: center;
   z-index: 5;
   opacity: 0;
-  transition: 1s;
   animation: float 3s infinite;
 }
 
@@ -107,10 +92,7 @@ body {
 
 .hero h1 {
   font-size: 70px;
-  text-shadow: 
-    0 0 10px white,
-    0 0 20px cyan,
-    0 0 40px cyan;
+  text-shadow: 0 0 10px white, 0 0 20px cyan, 0 0 40px cyan;
 }
 
 @keyframes float {
@@ -125,9 +107,7 @@ body {
   top: 35%;
   width: 100%;
   text-align: center;
-  font-size: 14px;
   opacity: 0;
-  transition: 1s;
 }
 
 #terminal.show { opacity: 0.7; }
@@ -137,13 +117,18 @@ body {
   display: flex;
   height: 100vh;
   opacity: 0;
-  transition: 1s;
 }
 
 .container.show { opacity: 1; }
 
-/* SIDE */
+/* SIDE (FIX QUAN TRỌNG) */
 .side {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
   background: rgba(0,0,0,0.3);
   border: 1px solid rgba(255,255,255,0.1);
   box-shadow: 0 0 20px rgba(0,0,0,0.5);
@@ -154,7 +139,7 @@ body {
   transform: scale(1.02);
   box-shadow: 0 0 25px rgba(0,255,255,0.3);
 }
-  
+
 .left {
   border-right: 1px solid rgba(255,255,255,0.1);
 }
@@ -164,6 +149,7 @@ body {
   background: rgba(0,0,0,0.4);
   border: 1px solid rgba(0,255,255,0.3);
   box-shadow: 0 0 15px rgba(0,255,255,0.2);
+  padding: 15px;
 }
 
 /* ICON */
@@ -199,7 +185,15 @@ body {
   cursor: pointer;
 }
 
-/* MOBILE */
+/* LINE */
+.line {
+  width: 200px;
+  height: 1px;
+  background: cyan;
+  margin: 10px auto;
+  box-shadow: 0 0 10px cyan;
+}
+
 @media(max-width:768px){
   .container { flex-direction: column; }
 }
@@ -216,147 +210,72 @@ body {
 <canvas id="particles"></canvas>
 <div class="cursor" id="cursor"></div>
 
-<!-- INTRO -->
 <div id="intro" onclick="enterSite()">
   <h1>ENTER SYSTEM</h1>
 </div>
 
-<!-- HERO -->
 <div class="hero" id="hero">
   <h1>MOREIRA</h1>
+  <div class="line"></div>
   <p id="typing"></p>
 </div>
 
-<!-- TERMINAL -->
 <div id="terminal">
   <p>> initializing system...</p>
   <p>> connecting liquidity...</p>
   <p>> scanning market...</p>
-  <p>> ready.</p>
 </div>
 
-<!-- MAIN -->
 <div class="container" id="main">
 
 <div class="side left">
   <h2>ESPORT</h2>
-
-  <img src="https://lanyard.cnrad.dev/api/375870617041240064?theme=dark&bg=000000&borderRadius=15px">
-
-  <div class="icons">
-    <a href="https://discord.gg/2W96ej7B">💬</a>
-    <a href="#">🎮</a>
-    <a href="#">📺</a>
-  </div>
+  <img src="https://lanyard.cnrad.dev/api/375870617041240064?theme=dark">
 </div>
 
 <div class="side">
   <h2>TRADER</h2>
-
-  <div class="card" id="tradeBox">
-    <p>PAIR: XAUUSD</p>
-    <p>STATUS: WAITING...</p>
-  </div>
-
-  <div class="icons">
-    <a href="https://vn.tradingview.com/chart/qjYmgyGN/">📊</a>
-  </div>
+  <div class="card" id="tradeBox"></div>
 </div>
 
 </div>
 
-<div id="musicBtn" onclick="toggleMusic()">MUSIC: OFF</div>
+<div id="musicBtn" onclick="toggleMusic()">MUSIC</div>
 
 <audio id="music" loop>
   <source src="https://files.catbox.moe/fh9v4n.mp3">
 </audio>
 
 <script>
-let music = document.getElementById("music");
-let btn = document.getElementById("musicBtn");
-let isPlaying = false;
-
-function enterSite() {
+function enterSite(){
   intro.classList.add("hide");
   main.classList.add("show");
   hero.classList.add("show");
-
-  setTimeout(()=>{
-    terminal.classList.add("show");
-  },1000);
-
-  music.play().then(()=>{
-    isPlaying = true;
-    btn.innerText = "MUSIC: ON";
-  });
+  setTimeout(()=>terminal.classList.add("show"),1000);
 }
 
-/* MUSIC */
-function toggleMusic() {
-  if(isPlaying){ music.pause(); btn.innerText="OFF"; }
-  else { music.play(); btn.innerText="ON"; }
-  isPlaying=!isPlaying;
-}
-
-/* CURSOR */
-document.addEventListener("mousemove", e=>{
-  cursor.style.left=e.clientX+"px";
-  cursor.style.top=e.clientY+"px";
-});
-
-/* TYPING */
-let text="TRADER | GAMER | DEV";
-let i=0;
+/* typing */
+let t="TRADER | GAMER | DEV",i=0;
 function typing(){
-  if(i<text.length){
-    typingEl.innerHTML+=text[i];
-    i++;
+  if(i<t.length){
+    typingEl.innerHTML+=t[i++];
     setTimeout(typing,80);
   }
 }
 let typingEl=document.getElementById("typing");
 typing();
 
-/* PARTICLES */
-let canvas=document.getElementById("particles");
-let ctx=canvas.getContext("2d");
-canvas.width=innerWidth;
-canvas.height=innerHeight;
+/* cursor */
+document.addEventListener("mousemove",e=>{
+  cursor.style.left=e.clientX+"px";
+  cursor.style.top=e.clientY+"px";
+});
 
-let p=[];
-for(let i=0;i<60;i++){
-  p.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height});
-}
-
-function draw(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  p.forEach(a=>{
-    ctx.fillRect(a.x,a.y,2,2);
-  });
-  requestAnimationFrame(draw);
-}
-draw();
-
-* {
-  transition: all 0.3s ease;
-}
-  
-/* FAKE REALTIME TRADE */
+/* fake trade */
 setInterval(()=>{
-  let types=["BUY","SELL"];
-  let pair="XAUUSD";
-  let price=(2000+Math.random()*100).toFixed(2);
-
-  document.getElementById("tradeBox").innerHTML=
-  `
-  <p>${types[Math.floor(Math.random()*2)]} ${pair}</p>
-  <p>ENTRY: ${price}</p>
-  <p>STATUS: EXECUTED</p>
-  `;
-},5000);
+  tradeBox.innerHTML=`<p>BUY XAUUSD</p><p>${(2000+Math.random()*100).toFixed(2)}</p>`;
+},3000);
 </script>
 
-<div class="line"></div>
-  
 </body>
 </html>
