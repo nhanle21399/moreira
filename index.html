@@ -18,12 +18,17 @@ body {
 
 /* VIDEO */
 video {
+#bgVideo {
   position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: brightness(0.6) contrast(1.2) blur(1px);
-  z-index: -2;
+  z-index: -3;
+
+  /* nhẹ thôi đừng giết nó */
+  filter: brightness(0.7) contrast(1.2);
 }
 
 /* OVERLAY */
@@ -31,10 +36,14 @@ video {
   position: fixed;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle, rgba(0,0,0,0.1), rgba(0,0,0,0.7));
+  background: rgba(0,0,0,0.4);
   z-index: -1;
 }
 
+body {
+  background: url("https://images.unsplash.com/photo-1534438327276-14e5300c3a48") no-repeat center/cover;
+}
+  
 /* PARTICLES */
 #particles {
   position: fixed;
@@ -73,6 +82,15 @@ video {
   100% {text-shadow: 2px 0 red;}
 }
 
+/* LINE */
+.line {
+  width: 200px;
+  height: 1px;
+  background: cyan;
+  margin: 10px auto;
+  box-shadow: 0 0 10px cyan;
+}
+  
 /* HERO */
 .hero {
   position: absolute;
@@ -88,8 +106,11 @@ video {
 .hero.show { opacity: 1; }
 
 .hero h1 {
-  font-size: 60px;
-  text-shadow: 0 0 20px white;
+  font-size: 70px;
+  text-shadow: 
+    0 0 10px white,
+    0 0 20px cyan,
+    0 0 40px cyan;
 }
 
 @keyframes float {
@@ -123,23 +144,26 @@ video {
 
 /* SIDE */
 .side {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  backdrop-filter: blur(6px);
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+  backdrop-filter: blur(10px);
 }
 
+.side:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 25px rgba(0,255,255,0.3);
+}
+  
 .left {
   border-right: 1px solid rgba(255,255,255,0.1);
 }
 
 /* CARD */
 .card {
-  border: 1px solid rgba(255,255,255,0.2);
-  padding: 15px;
-  margin: 10px;
+  background: rgba(0,0,0,0.4);
+  border: 1px solid rgba(0,255,255,0.3);
+  box-shadow: 0 0 15px rgba(0,255,255,0.2);
 }
 
 /* ICON */
@@ -184,8 +208,8 @@ video {
 
 <body>
 
-<video autoplay muted loop playsinline>
-  <source src="https://cdn.coverr.co/videos/coverr-neon-city-night-3982/1080p.mp4">
+<video autoplay muted loop playsinline id="bgVideo">
+  <source src="https://cdn.coverr.co/videos/coverr-aerial-view-of-a-city-at-night-5176/1080p.mp4">
 </video>
 
 <div class="overlay"></div>
@@ -313,6 +337,10 @@ function draw(){
 }
 draw();
 
+* {
+  transition: all 0.3s ease;
+}
+  
 /* FAKE REALTIME TRADE */
 setInterval(()=>{
   let types=["BUY","SELL"];
@@ -328,5 +356,7 @@ setInterval(()=>{
 },5000);
 </script>
 
+<div class="line"></div>
+  
 </body>
 </html>
