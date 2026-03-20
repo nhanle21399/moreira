@@ -284,12 +284,21 @@ function enterSite() {
   });
 }
 
-function animateCursor(){
-  curX += (mouseX-curX)*0.1;
-  curY += (mouseY-curY)*0.1;
+let cursor = document.getElementById("cursor");
+let mouseX = 0, mouseY = 0;
+let curX = 0, curY = 0;
 
-  cursor.style.left=curX+"px";
-  cursor.style.top=curY+"px";
+document.addEventListener("mousemove", e=>{
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+});
+
+function animateCursor(){
+  curX += (mouseX - curX) * 0.15; // mượt hơn
+  curY += (mouseY - curY) * 0.15;
+
+  cursor.style.left = curX + "px";
+  cursor.style.top = curY + "px";
 
   requestAnimationFrame(animateCursor);
 }
