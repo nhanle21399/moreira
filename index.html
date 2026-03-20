@@ -99,7 +99,7 @@ video {
   position: absolute;
   top: 35%;
   width: 100%;
-  text-align: c;
+  text-align: center;
   font-size: 14px;
   opacity: 0;
   transition: 1s;
@@ -120,8 +120,8 @@ video {
   flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: c;
-  justify-content: c;
+  align-items: center;
+  justify-content: center;
   background: transparent;
 }
 
@@ -469,7 +469,7 @@ async function updateTrade() {
     box.innerHTML = `
       <p style="opacity:0.6">LIVE TRADE</p>
       <p><b>${symbol}</b> • ${type}</p>
-      <p>Entry: ${entry.toFixed(2)} (${lot} lot)
+      <p>Entry: ${entry.toFixed(2)} (${lot} lot)</p>
       <p>Price: ${current.toFixed(2)}</p>
       <p style="
         color:${pnl >= 0 ? '#00ff9f' : '#ff4d4d'};
@@ -491,9 +491,11 @@ async function updateTrade() {
   <p style="color:cyan">Balance: $${balance}</p>
 `;
 
-  showTrade = !showTrade;
+   showTrade = !showTrade;
 }
 
+// ❗ THÊM DÒNG NÀY
+}
 setInterval(updateTrade, 5000);
 updateTrade();
 
