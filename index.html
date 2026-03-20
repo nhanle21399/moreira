@@ -136,7 +136,8 @@ video {
 }
 
 /* CARD */
-.card {
+.card:hover {
+  transform: scale(1.05);
   border: 1px solid rgba(255,255,255,0.2);
   padding: 15px;
   margin: 10px;
@@ -267,10 +268,36 @@ function enterSite() {
   });
 }
 
+/* MOUSE */
+let mouseX=0, mouseY=0, curX=0, curY=0;
+
+document.addEventListener("mousemove", e=>{
+  mouseX=e.clientX;
+  mouseY=e.clientY;
+});
+
+function animateCursor(){
+  curX += (mouseX-curX)*0.1;
+  curY += (mouseY-curY)*0.1;
+
+  cursor.style.left=curX+"px";
+  cursor.style.top=curY+"px";
+
+  requestAnimationFrame(animateCursor);
+}
+animateCursor();
+
+let lines=[
+"> connecting liquidity...",
+"> scanning smart money...",
+"> detecting FVG...",
+"> ready."
+];
+
 /* MUSIC */
 function toggleMusic() {
-  if(isPlaying){ music.pause(); btn.innerText="OFF"; }
-  else { music.play(); btn.innerText="ON"; }
+  if(isPlaying){ music.pause(); btn.innerText="MUSIC: OFF"; }
+  else { music.play(); btn.innerText="MUSIC: ON"; }
   isPlaying=!isPlaying;
 }
 
