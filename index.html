@@ -19,41 +19,52 @@ body {
   text-shadow: 0 0 5px rgba(255,255,255,0.2);
 }
 
-/* ===== Discord-like status badge ===== */
+/* ===== Discord status kiểu Guns.lol final ===== */
 .discord-status-box {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 12px;
-  border-radius: 999px; /* pill shape */
-  background: rgba(0,0,0,0.3);
-  border: 1px solid rgba(255,255,255,0.15);
-  font-size: 14px;
-  font-weight: 500;
+  gap: 10px;
+  padding: 8px 16px;
+  border-radius: 12px; /* chữ nhật bo nhẹ */
+  background: rgba(0,0,0,0.25); /* trong suốt */
+  border: 1px solid rgba(255,255,255,0.15); /* viền mờ */
+  font-size: 16px;
+  font-weight: bold;
   color: #fff;
   backdrop-filter: blur(6px);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 0 8px rgba(0,0,0,0.5);
   margin-top: 15px;
+  min-width: 140px; /* rộng vừa phải */
 }
 
 .status-dot {
-  width: 6px;
-  height: 6px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  background: #43b581; /* online color */
+  background: #43b581; /* online */
   border: 1px solid rgba(255,255,255,0.6);
   transition: all 0.3s ease;
 }
 
-.status-dot.offline { background: gray; }
-
 /* Pulse animation */
 @keyframes pulse {
   0% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.3); opacity: 0.7; }
+  50% { transform: scale(1.4); opacity: 0.7; }
   100% { transform: scale(1); opacity: 1; }
 }
-.status-dot.online { animation: pulse 1.8s ease-in-out infinite; }
+.status-dot.online {
+  animation: pulse 1.6s ease-in-out infinite;
+}
+
+.status-dot.offline {
+  background: gray;
+}
+
+.status-text {
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+}
 
 /* VIDEO BACKGROUND */
 video {
@@ -254,7 +265,7 @@ video {
     <!-- Avatar -->
     <img src="https://lanyard.cnrad.dev/api/375870617041240064" width="250" height="250" style="border-radius: 50%; border: 3px solid cyan;">
 
-    <!-- Discord status kiểu Guns.lol -->
+    <!-- Discord status kiểu Guns.lol final -->
     <div class="discord-status-box">
       <span class="status-dot online"></span>
       <span class="status-text">ONLINE</span>
