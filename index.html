@@ -132,13 +132,15 @@ body {
 
 /* SIDE */
 .side {
-  box-shadow: inset 0 0 10px rgba(0,255,255,0.02); /* blur nhẹ để text nổi */
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  backdrop-filter: blur(6px);
+  backdrop-filter: blur(4px);   /* blur nhẹ, trong suốt */
+  background: rgba(0,0,0,0.1); /* giảm opacity */
+  box-shadow: none;             /* bỏ shadow cứng */
+  border: none;                 /* bỏ border trắng */
 }
 
 .left {
