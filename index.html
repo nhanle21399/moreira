@@ -16,33 +16,44 @@ body {
   overflow: hidden;
   background: black;
   cursor: none;
+  text-shadow: 0 0 5px rgba(255,255,255,0.2);
 }
 
-/* Discord status kiểu Guns.lol */
+/* ===== Discord-like status badge ===== */
 .discord-status-box {
-  margin-top: 15px;
   display: inline-flex;
   align-items: center;
+  gap: 6px;
   padding: 4px 12px;
-  border-radius: 999px; /* bo tròn như pill */
-  background: rgba(0,0,0,0.25);
+  border-radius: 999px; /* pill shape */
+  background: rgba(0,0,0,0.3);
   border: 1px solid rgba(255,255,255,0.15);
   font-size: 14px;
   font-weight: 500;
+  color: #fff;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+  margin-top: 15px;
 }
 
 .status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #43b581; /* online color */
+  border: 1px solid rgba(255,255,255,0.6);
   transition: all 0.3s ease;
 }
-.status-dot.online {
-  animation: pulse 2s infinite;
-}
 
+.status-dot.offline { background: gray; }
+
+/* Pulse animation */
 @keyframes pulse {
   0% { transform: scale(1); opacity: 1; }
   50% { transform: scale(1.3); opacity: 0.7; }
   100% { transform: scale(1); opacity: 1; }
 }
+.status-dot.online { animation: pulse 1.8s ease-in-out infinite; }
 
 /* VIDEO BACKGROUND */
 video {
@@ -89,10 +100,7 @@ video {
   cursor: pointer;
   transition: 0.8s;
 }
-#intro.hide {
-  opacity: 0;
-  pointer-events: none;
-}
+#intro.hide { opacity: 0; pointer-events: none; }
 #intro h1 { animation: glitch 1s infinite; }
 
 /* GLITCH */
@@ -121,8 +129,6 @@ video {
   50% {transform: translateY(-10px);}
   100% {transform: translateY(0);}
 }
-
-body { text-shadow: 0 0 5px rgba(255,255,255,0.2); }
 
 /* TERMINAL */
 #terminal {
