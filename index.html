@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>MOREIRA</title>
+<title>MOREIRA SYSTEM</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -19,8 +19,6 @@ body {
 /* VIDEO */
 video {
   position: fixed;
-  top: 0;
-  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -28,20 +26,20 @@ video {
   z-index: -2;
 }
 
-/* OVERLAY (cinematic) */
+/* OVERLAY */
 .overlay {
   position: fixed;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.85) 100%);
+  background: radial-gradient(circle, rgba(0,0,0,0.2), rgba(0,0,0,0.9));
   z-index: -1;
 }
 
 /* PARTICLES */
 #particles {
   position: fixed;
-  top: 0;
-  left: 0;
+  width: 100%;
+  height: 100%;
   z-index: 0;
 }
 
@@ -56,7 +54,7 @@ video {
   align-items: center;
   z-index: 10;
   cursor: pointer;
-  transition: opacity 0.8s;
+  transition: 0.8s;
 }
 
 #intro.hide {
@@ -65,7 +63,6 @@ video {
 }
 
 #intro h1 {
-  font-size: 40px;
   animation: glitch 1s infinite;
 }
 
@@ -84,37 +81,35 @@ video {
   text-align: center;
   z-index: 5;
   opacity: 0;
-  transform: translateY(20px);
   transition: 1s;
-  animation: float 3s ease-in-out infinite;
+  animation: float 3s infinite;
 }
 
-.hero.show {
-  opacity: 1;
-  transform: translateY(0);
-}
+.hero.show { opacity: 1; }
 
 .hero h1 {
   font-size: 60px;
-  letter-spacing: 5px;
-  text-shadow: 
-    0 0 10px rgba(255,255,255,0.8),
-    0 0 20px rgba(255,255,255,0.5);
-}
-
-.hero h1:hover {
-  animation: glitch 0.3s infinite;
-}
-
-.hero p {
-  opacity: 0.7;
+  text-shadow: 0 0 20px white;
 }
 
 @keyframes float {
-  0% { transform: translateY(0);}
-  50% { transform: translateY(-10px);}
-  100% { transform: translateY(0);}
+  0% {transform: translateY(0);}
+  50% {transform: translateY(-10px);}
+  100% {transform: translateY(0);}
 }
+
+/* TERMINAL */
+#terminal {
+  position: absolute;
+  top: 35%;
+  width: 100%;
+  text-align: center;
+  font-size: 14px;
+  opacity: 0;
+  transition: 1s;
+}
+
+#terminal.show { opacity: 0.7; }
 
 /* MAIN */
 .container {
@@ -122,30 +117,42 @@ video {
   height: 100vh;
   opacity: 0;
   transition: 1s;
-  z-index: 2;
 }
 
-.container.show {
-  opacity: 1;
-}
+.container.show { opacity: 1; }
 
 /* SIDE */
 .side {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   backdrop-filter: blur(6px);
-  transition: 0.3s;
-}
-
-.side:hover {
-  background: rgba(255,255,255,0.05);
 }
 
 .left {
   border-right: 1px solid rgba(255,255,255,0.1);
+}
+
+/* CARD */
+.card {
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 15px;
+  margin: 10px;
+}
+
+/* ICON */
+.icons a {
+  margin: 5px;
+  font-size: 20px;
+  color: white;
+  text-decoration: none;
+}
+
+.icons a:hover {
+  color: cyan;
+  text-shadow: 0 0 10px cyan;
 }
 
 /* CURSOR */
@@ -156,7 +163,6 @@ video {
   position: fixed;
   border-radius: 50%;
   pointer-events: none;
-  z-index: 999;
 }
 
 /* MUSIC */
@@ -171,9 +177,7 @@ video {
 
 /* MOBILE */
 @media(max-width:768px){
-  .container {
-    flex-direction: column;
-  }
+  .container { flex-direction: column; }
 }
 </style>
 </head>
@@ -186,25 +190,55 @@ video {
 
 <div class="overlay"></div>
 <canvas id="particles"></canvas>
-
 <div class="cursor" id="cursor"></div>
 
+<!-- INTRO -->
 <div id="intro" onclick="enterSite()">
   <h1>ENTER SYSTEM</h1>
 </div>
 
+<!-- HERO -->
 <div class="hero" id="hero">
   <h1>MOREIRA</h1>
-  <p>TRADER | GAMER | DEV</p>
+  <p id="typing"></p>
 </div>
 
+<!-- TERMINAL -->
+<div id="terminal">
+  <p>> initializing system...</p>
+  <p>> connecting liquidity...</p>
+  <p>> scanning market...</p>
+  <p>> ready.</p>
+</div>
+
+<!-- MAIN -->
 <div class="container" id="main">
-  <div class="side left">
-    <h2>ESPORT</h2>
+
+<div class="side left">
+  <h2>ESPORT</h2>
+
+  <img src="https://lanyard.cnrad.dev/api/375870617041240064" width="200">
+
+  <div class="icons">
+    <a href="https://discord.gg/2W96ej7B">💬</a>
+    <a href="#">🎮</a>
+    <a href="#">📺</a>
   </div>
-  <div class="side">
-    <h2>TRADER</h2>
+</div>
+
+<div class="side">
+  <h2>TRADER</h2>
+
+  <div class="card" id="tradeBox">
+    <p>PAIR: XAUUSD</p>
+    <p>STATUS: WAITING...</p>
   </div>
+
+  <div class="icons">
+    <a href="https://vn.tradingview.com/chart/qjYmgyGN/">📊</a>
+  </div>
+</div>
+
 </div>
 
 <div id="musicBtn" onclick="toggleMusic()">MUSIC: OFF</div>
@@ -219,68 +253,79 @@ let btn = document.getElementById("musicBtn");
 let isPlaying = false;
 
 function enterSite() {
-  document.getElementById("intro").classList.add("hide");
-  document.getElementById("main").classList.add("show");
-  document.getElementById("hero").classList.add("show");
+  intro.classList.add("hide");
+  main.classList.add("show");
+  hero.classList.add("show");
+
+  setTimeout(()=>{
+    terminal.classList.add("show");
+  },1000);
 
   music.play().then(()=>{
     isPlaying = true;
     btn.innerText = "MUSIC: ON";
-  }).catch(()=>{});
+  });
 }
 
+/* MUSIC */
 function toggleMusic() {
-  if (isPlaying) {
-    music.pause();
-    btn.innerText = "MUSIC: OFF";
-  } else {
-    music.play();
-    btn.innerText = "MUSIC: ON";
-  }
-  isPlaying = !isPlaying;
+  if(isPlaying){ music.pause(); btn.innerText="OFF"; }
+  else { music.play(); btn.innerText="ON"; }
+  isPlaying=!isPlaying;
 }
 
 /* CURSOR */
-let cursor = document.getElementById("cursor");
-
-document.addEventListener("mousemove", e => {
-  cursor.style.top = e.clientY + "px";
-  cursor.style.left = e.clientX + "px";
-
-  cursor.style.transform = "scale(1.5)";
-  setTimeout(()=>{
-    cursor.style.transform = "scale(1)";
-  },100);
+document.addEventListener("mousemove", e=>{
+  cursor.style.left=e.clientX+"px";
+  cursor.style.top=e.clientY+"px";
 });
 
+/* TYPING */
+let text="TRADER | GAMER | DEV";
+let i=0;
+function typing(){
+  if(i<text.length){
+    typingEl.innerHTML+=text[i];
+    i++;
+    setTimeout(typing,80);
+  }
+}
+let typingEl=document.getElementById("typing");
+typing();
+
 /* PARTICLES */
-let canvas = document.getElementById("particles");
-let ctx = canvas.getContext("2d");
+let canvas=document.getElementById("particles");
+let ctx=canvas.getContext("2d");
+canvas.width=innerWidth;
+canvas.height=innerHeight;
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-let particles = [];
-
+let p=[];
 for(let i=0;i<60;i++){
-  particles.push({
-    x: Math.random()*canvas.width,
-    y: Math.random()*canvas.height,
-    size: Math.random()*2
-  });
+  p.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height});
 }
 
 function draw(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  particles.forEach(p=>{
-    ctx.beginPath();
-    ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
-    ctx.fillStyle="white";
-    ctx.fill();
+  p.forEach(a=>{
+    ctx.fillRect(a.x,a.y,2,2);
   });
   requestAnimationFrame(draw);
 }
 draw();
+
+/* FAKE REALTIME TRADE */
+setInterval(()=>{
+  let types=["BUY","SELL"];
+  let pair="XAUUSD";
+  let price=(2000+Math.random()*100).toFixed(2);
+
+  document.getElementById("tradeBox").innerHTML=
+  `
+  <p>${types[Math.floor(Math.random()*2)]} ${pair}</p>
+  <p>ENTRY: ${price}</p>
+  <p>STATUS: EXECUTED</p>
+  `;
+},5000);
 </script>
 
 </body>
