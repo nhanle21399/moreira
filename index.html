@@ -127,13 +127,24 @@ video {
 
 /* CARD */
 .card {
-  background: rgba(80,80,80,0.2);
-  padding: 15px 20px;
-  border-radius: 10px;
-  min-width: 200px;
+  background: rgba(20,20,20,0.6);
+  padding: 18px 22px;
+  border-radius: 12px;
+  min-width: 240px;
   text-align: left;
-  backdrop-filter: blur(5px);
-  box-shadow: 0 0 10px rgba(255,255,255,0.1);
+  backdrop-filter: blur(10px);
+  box-shadow: 
+    0 0 10px rgba(0,0,0,0.5),
+    0 0 20px rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  transition: 0.3s;
+}
+
+.card:hover {
+  transform: scale(1.02);
+  box-shadow: 
+    0 0 20px rgba(0,255,255,0.2),
+    0 0 40px rgba(0,255,255,0.1);
 }
 
 /* SOCIAL ICONS */
@@ -281,6 +292,7 @@ canvas, .overlay {
 }
 
 </style>
+
 </head>
 
 <body>
@@ -430,39 +442,47 @@ async function updateTrade() {
   let box = document.getElementById("tradeBox");
 
   if (showTrade) {
-    let symbol = "XAUUSD";
+
+    let now = new Date();
+    let day = now.getUTCDay();
+
+    let symbol = (day === 0 || day === 6) ? "BTCUSDT" : "XAUUSD";
     let price = await getPrice(symbol);
 
-    // nếu lỗi → dùng BTC
-    if (!price) {
-      symbol = "BTCUSDT";
-      price = await getPrice(symbol);
-    }
-
     let type = Math.random() > 0.5 ? "BUY" : "SELL";
+    
+    let lot = (Math.random() * 0.5 + 0.01).toFixed(2);
+    
     let entry = price + (Math.random() * 10 - 5);
     let current = price;
-    let pnl = (type === "BUY" ? current - entry : entry - current).toFixed(2);
-
+    
+    let pnlRaw = (type === "BUY" ? current - entry : entry - current);
+    let pnl = (pnlRaw * lot * 100).toFixed(2);
+    
     box.innerHTML = `
-      <p><b>${symbol}</b></p>
-      <p>${type} @ ${entry.toFixed(2)}</p>
-      <p>NOW: ${current.toFixed(2)}</p>
-      <p style="color:${pnl >= 0 ? 'lime' : 'red'}">
+      <p style="opacity:0.6">LIVE TRADE</p>
+      <p><b>${symbol}</b> • ${type}</p>
+      <p>Entry: ${entry.toFixed(2)} (${lot} lot)
+      <p>Price: ${current.toFixed(2)}</p>
+      <p style="
+        color:${pnl >= 0 ? '#00ff9f' : '#ff4d4d'};
+        font-weight:bold;
+        text-shadow: 0 0 8px ${pnl >= 0 ? '#00ff9f' : '#ff4d4d'};
+      ">
         PNL: ${pnl}
       </p>
-    `;
-
+`;
+    
   } else {
     let trades = Math.floor(Math.random()*20)+5;
     let balance = (1000 + Math.random()*5000).toFixed(2);
 
     box.innerHTML = `
-      <p><b>EXNESS</b></p>
-      <p>Trades today: ${trades}</p>
-      <p>Balance: $${balance}</p>
-    `;
-  }
+      <p style="opacity:0.6">ACCOUNT</p>
+  <p><b>Broker:</b> EXNESS</p>
+  <p>Trades today: ${trades}</p>
+  <p style="color:cyan">Balance: $${balance}</p>
+`;
 
   showTrade = !showTrade;
 }
@@ -498,6 +518,7 @@ async function updateDiscord() {
     // Remove old badges
     usernameDiv.querySelectorAll(".badge-icon").forEach(b=>b.remove());
     const flags = user.public_flags || 0;
+    const badgeIcons = {};
     Object.keys(badgeIcons).forEach(bit=>{
       bit=parseInt(bit);
       if(flags & bit){
@@ -537,6 +558,7 @@ async function updateDiscord() {
     activityDiv.innerHTML="";
   }
 }
+
 
 updateDiscord();
 setInterval(updateDiscord,15000);
