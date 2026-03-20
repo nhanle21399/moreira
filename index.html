@@ -28,7 +28,14 @@ body {
 
 #intro h1 {
   opacity: 0.7;
-  letter-spacing: 3px;
+  letter-spacing: 5px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {opacity: 0.3;}
+  50% {opacity: 1;}
+  100% {opacity: 0.3;}
 }
 
 /* MAIN */
@@ -49,11 +56,12 @@ body {
 }
 
 .left {
-  border-right: 1px solid rgba(255,255,255,0.2);
+  border-right: 1px solid rgba(255,255,255,0.1);
 }
 
 .side:hover {
-  background: rgba(255,255,255,0.05);
+  background: rgba(255,255,255,0.08);
+  transform: scale(1.03);
 }
 
 h1 {
@@ -88,28 +96,34 @@ button:hover {
 
 <div class="side left">
   <h1>ESPORT</h1>
-  <p>Psychosis Player</p>
+  <p>PSYCHOSIS PLAYER</p>
+  <p style="opacity:0.5;">COMPETITIVE TFT</p>
   <button onclick="window.open('https://discord.gg/2W96ej7B')">JOIN</button>
 </div>
 
 <div class="side">
   <h1>ICT TRADER</h1>
-  <p>| XAUUSD |</p>
+  <p>ICT STRATEGY</p>
+  <p style="opacity:0.5;">XAUUSD | LIQUIDITY</p>
   <button onclick="window.open('https://vn.tradingview.com/chart/qjYmgyGN/?symbol=OANDA%3AXAUUSD')">SIGNAL</button>
 </div>
 
 </div>
 
 <!-- MUSIC -->
-<audio autoplay loop>
+<audio id="music" loop>
   <source src="https://files.catbox.moe/fh9v4n.mp3">
 </audio>
 
 <script>
 function enterSite() {
-  document.getElementById("intro").style.display = "none";
-  document.getElementById("main").style.opacity = "1";
-  document.getElementById("music").play();
+  document.getElementById("intro").style.opacity = "0";
+
+  setTimeout(() => {
+    document.getElementById("intro").style.display = "none";
+    document.getElementById("main").style.opacity = "1";
+    document.getElementById("music").play();
+  }, 500);
 }
 </script>
 
