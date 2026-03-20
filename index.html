@@ -2,98 +2,49 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>MOREIRA SYSTEM</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MOREIRA</title>
 
 <style>
-* { transition: all 0.3s ease; }
-
 body {
   margin: 0;
   font-family: monospace;
   color: white;
   overflow: hidden;
-  cursor: none;
 }
 
-/* VIDEO */
-#bgVideo {
+/* BACKGROUND */
+#bg {
   position: fixed;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  z-index: -3;
-  filter: brightness(0.6) contrast(1.2);
-}
-
-/* OVERLAY */
-.overlay {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.4);
+  filter: brightness(0.6);
   z-index: -1;
 }
 
-/* INTRO */
-#intro {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  background: black;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 10;
-  cursor: pointer;
-}
-
-#intro h1 {
-  animation: glitch 1s infinite;
-}
-
-#intro.hide {
-  opacity: 0;
-  pointer-events: none;
-}
-
-@keyframes glitch {
-  0% {text-shadow: 2px 0 red;}
-  50% {text-shadow: -2px 0 blue;}
-  100% {text-shadow: 2px 0 red;}
-}
-
-/* HERO */
-.hero {
+/* CENTER */
+.center {
   position: absolute;
   top: 20%;
   width: 100%;
   text-align: center;
-  z-index: 5;
-  opacity: 0;
 }
 
-.hero.show { opacity: 1; }
-
-.hero h1 {
-  font-size: 70px;
-  text-shadow: 0 0 10px white, 0 0 20px cyan, 0 0 40px cyan;
+.center h1 {
+  font-size: 60px;
+  margin: 0;
 }
 
-.line {
-  width: 200px;
-  height: 1px;
-  background: cyan;
-  margin: 10px auto;
+.center p {
+  opacity: 0.7;
+  letter-spacing: 3px;
 }
 
 /* MAIN */
-.container {
+.main {
   display: flex;
   height: 100vh;
-  opacity: 0;
 }
-.container.show { opacity: 1; }
 
 /* SIDE */
 .side {
@@ -103,45 +54,36 @@ body {
   align-items: center;
   justify-content: center;
 
-  background: rgba(0,0,0,0.3);
-  backdrop-filter: blur(10px);
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(8px);
 }
 
+/* LEFT BORDER */
 .left {
   border-right: 1px solid rgba(255,255,255,0.1);
 }
 
 /* CARD */
 .card {
-  background: rgba(0,0,0,0.4);
-  border: 1px solid cyan;
+  border: 1px solid rgba(255,255,255,0.2);
   padding: 15px;
+  margin-top: 10px;
 }
 
 /* ICON */
 .icons a {
-  margin: 8px;
-  font-size: 22px;
+  margin: 10px;
+  font-size: 20px;
   color: white;
   text-decoration: none;
 }
 
 .icons a:hover {
-  color: cyan;
-}
-
-/* CURSOR */
-.cursor {
-  width: 10px;
-  height: 10px;
-  background: white;
-  position: fixed;
-  border-radius: 50%;
-  pointer-events: none;
+  opacity: 0.6;
 }
 
 /* MUSIC */
-#musicBtn {
+#music {
   position: fixed;
   bottom: 20px;
   right: 20px;
@@ -154,27 +96,19 @@ body {
 
 <body>
 
-<video autoplay muted loop playsinline id="bgVideo">
+<!-- VIDEO -->
+<video autoplay muted loop id="bg">
   <source src="https://cdn.coverr.co/videos/coverr-anime-style-city-1560/1080p.mp4">
 </video>
 
-<div class="overlay"></div>
-<div class="cursor" id="cursor"></div>
-
-<!-- INTRO -->
-<div id="intro" onclick="enterSite()">
-  <h1>ENTER SYSTEM</h1>
-</div>
-
-<!-- HERO -->
-<div class="hero" id="hero">
+<!-- CENTER -->
+<div class="center">
   <h1>MOREIRA</h1>
-  <div class="line"></div>
-  <p id="typing"></p>
+  <p>TRADER | GAMER | DEV</p>
 </div>
 
 <!-- MAIN -->
-<div class="container" id="main">
+<div class="main">
 
 <div class="side left">
   <h2>ESPORT</h2>
@@ -184,14 +118,16 @@ body {
   <div class="icons">
     <a href="https://discord.gg/2W96ej7B">💬</a>
     <a href="#">🎮</a>
-    <a href="#">📺</a>
   </div>
 </div>
 
 <div class="side">
   <h2>TRADER</h2>
 
-  <div class="card" id="tradeBox"></div>
+  <div class="card">
+    <p>XAUUSD</p>
+    <p>WAITING...</p>
+  </div>
 
   <div class="icons">
     <a href="https://vn.tradingview.com/chart/qjYmgyGN/">📊</a>
@@ -200,61 +136,23 @@ body {
 
 </div>
 
-<div id="musicBtn" onclick="toggleMusic()">MUSIC: OFF</div>
+<!-- MUSIC -->
+<div id="musicBtn">MUSIC</div>
 
-<audio id="music" loop>
+<audio id="audio" loop>
   <source src="https://files.catbox.moe/fh9v4n.mp3">
 </audio>
 
 <script>
-let music = document.getElementById("music");
-let btn = document.getElementById("musicBtn");
-let isPlaying = false;
+let audio = document.getElementById("audio");
 
-function enterSite(){
-  intro.classList.add("hide");
-  hero.classList.add("show");
-  main.classList.add("show");
-
-  music.play();
-  isPlaying = true;
-  btn.innerText="MUSIC: ON";
-}
-
-/* MUSIC */
-function toggleMusic(){
-  if(isPlaying){
-    music.pause();
-    btn.innerText="OFF";
-  }else{
-    music.play();
-    btn.innerText="ON";
+document.getElementById("musicBtn").onclick = () => {
+  if(audio.paused){
+    audio.play();
+  } else {
+    audio.pause();
   }
-  isPlaying=!isPlaying;
-}
-
-/* CURSOR */
-document.addEventListener("mousemove",e=>{
-  cursor.style.left=e.clientX+"px";
-  cursor.style.top=e.clientY+"px";
-});
-
-/* TYPING */
-let t="TRADER | GAMER | DEV",i=0;
-let typingEl=document.getElementById("typing");
-
-function typing(){
-  if(i<t.length){
-    typingEl.innerHTML+=t[i++];
-    setTimeout(typing,80);
-  }
-}
-typing();
-
-/* FAKE TRADE */
-setInterval(()=>{
-  tradeBox.innerHTML=`<p>BUY XAUUSD</p><p>${(2000+Math.random()*100).toFixed(2)}</p>`;
-},3000);
+};
 </script>
 
 </body>
