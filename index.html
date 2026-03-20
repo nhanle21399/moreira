@@ -10,8 +10,8 @@ body {
   background: black;
   color: white;
   font-family: monospace;
-  overflow: hidden;
   cursor: crosshair;
+  user-select: none;
 }
 
 /* FILM GRAIN */
@@ -66,6 +66,7 @@ body::after {
   justify-content: center;
   align-items: center;
   transition: 0.4s;
+  will-change: transform;
 }
 
 .left {
@@ -132,7 +133,7 @@ button:hover {
 <body>
 
 <!-- MUSIC BUTTON -->
-<button id="toggleMusic" onclick="toggleMusic()">MUSIC</button>
+<button id="toggleMusic" onclick="toggleMusic()">MUSIC OFF</button>
 
 <!-- INTRO -->
 <div id="intro" onclick="enterSite()">
@@ -167,13 +168,18 @@ button:hover {
 let isPlaying = false;
 
 function enterSite() {
-  document.getElementById("intro").style.opacity = "0";
+  const intro = document.getElementById("intro");
+
+  intro.style.opacity = "0";
 
   setTimeout(() => {
-    document.getElementById("intro").style.display = "none";
+    intro.style.display = "none";
     document.getElementById("main").style.opacity = "1";
-    document.getElementById("music").play();
+
+    let music = document.getElementById("music");
+    music.play();
     isPlaying = true;
+    updateButton();
   }, 500);
 }
 
@@ -187,6 +193,12 @@ function toggleMusic() {
     music.play();
     isPlaying = true;
   }
+
+  updateButton();
+}
+
+function updateButton() {
+  document.getElementById("toggleMusic").innerText = isPlaying ? "MUSIC ON" : "MUSIC OFF";
 }
 </script>
 
