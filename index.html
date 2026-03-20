@@ -19,53 +19,6 @@ body {
   text-shadow: 0 0 5px rgba(255,255,255,0.2);
 }
 
-/* ===== Discord status kiểu Guns.lol final ===== */
-.discord-status-box {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 16px;
-  border-radius: 12px; /* chữ nhật bo nhẹ */
-  background: rgba(0,0,0,0.25); /* trong suốt */
-  border: 1px solid rgba(255,255,255,0.15); /* viền mờ */
-  font-size: 16px;
-  font-weight: bold;
-  color: #fff;
-  backdrop-filter: blur(6px);
-  box-shadow: 0 0 8px rgba(0,0,0,0.5);
-  margin-top: 15px;
-  min-width: 140px; /* rộng vừa phải */
-}
-
-.status-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #43b581; /* online */
-  border: 1px solid rgba(255,255,255,0.6);
-  transition: all 0.3s ease;
-}
-
-/* Pulse animation */
-@keyframes pulse {
-  0% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.4); opacity: 0.7; }
-  100% { transform: scale(1); opacity: 1; }
-}
-.status-dot.online {
-  animation: pulse 1.6s ease-in-out infinite;
-}
-
-.status-dot.offline {
-  background: gray;
-}
-
-.status-text {
-  font-size: 16px;
-  font-weight: bold;
-  color: #fff;
-}
-
 /* VIDEO BACKGROUND */
 video {
   position: fixed;
@@ -172,15 +125,6 @@ video {
   background: transparent;
 }
 
-/* CARD */
-.card {
-  border: 1px solid rgba(255,255,255,0.2);
-  padding: 15px;
-  margin: 10px;
-  transition: 0.3s;
-}
-.card:hover { transform: scale(1.05); }
-
 /* SOCIAL ICONS */
 .icons {
   margin-top: 20px;
@@ -225,6 +169,55 @@ video {
 @media(max-width:768px){
   .container { flex-direction: column; }
 }
+
+/* ===== Discord Lanyard rectangle professional ===== */
+.discord-lanyard-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: rgba(50,50,50,0.2); /* transparent gray */
+  min-width: 180px;
+  max-width: 250px;
+}
+
+.discord-lanyard-box img {
+  width: 50px;
+  height: 50px;
+  border-radius: 6px; /* slight rounding */
+  border: none; /* remove green border */
+  object-fit: cover;
+}
+
+.discord-lanyard-box .username {
+  font-weight: 600;
+  color: #fff;
+  font-size: 14px;
+}
+
+.discord-lanyard-box .status-text {
+  font-size: 13px;
+  font-weight: 500;
+  color: #ccc;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.discord-lanyard-box .status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #43b581; /* online green */
+  animation: pulse 1.6s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.7; }
+  100% { transform: scale(1); opacity: 1; }
+}
 </style>
 </head>
 
@@ -262,13 +255,15 @@ video {
   <div class="side left">
     <h2>ESPORT</h2>
 
-    <!-- Avatar -->
-    <img src="https://lanyard.cnrad.dev/api/375870617041240064" width="250" height="250" style="border-radius: 50%; border: 3px solid cyan;">
-
-    <!-- Discord status kiểu Guns.lol final -->
-    <div class="discord-status-box">
-      <span class="status-dot online"></span>
-      <span class="status-text">ONLINE</span>
+    <!-- Discord Lanyard live rectangle -->
+    <div class="discord-lanyard-box">
+      <img src="https://lanyard.cnrad.dev/api/375870617041240064" alt="avatar">
+      <div>
+        <div class="username">moreira.borges 🔥 PANU</div>
+        <div class="status-text">
+          <span class="status-dot"></span> ONLINE
+        </div>
+      </div>
     </div>
 
     <!-- Social icons -->
