@@ -125,12 +125,38 @@ video {
   background: transparent;
 }
 
+/* CARD */
+.card {
+  background: rgba(80,80,80,0.2);
+  padding: 15px 20px;
+  border-radius: 10px;
+  min-width: 200px;
+  text-align: left;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 0 10px rgba(255,255,255,0.1);
+}
+
 /* SOCIAL ICONS */
 .icons {
   margin-top: 20px;
   display: flex;
   justify-content: center;
   gap: 20px;
+}
+.icons img {
+  width: 28px;
+  height: 28px;
+  transition: 0.3s;
+}
+
+.icons img:hover {
+  transform: scale(1.3);
+  filter: drop-shadow(0 0 10px cyan);
+}
+.icons a {
+  position: relative;
+  z-index: 10;
+  pointer-events: auto;
 }
 .icons a {
   color: white;
@@ -141,6 +167,9 @@ video {
   color: cyan;
   transform: scale(1.3);
   text-shadow: 0 0 15px cyan;
+}
+canvas, .overlay {
+  pointer-events: none;
 }
 
 /* CURSOR */
@@ -305,6 +334,9 @@ video {
       <a href="https://twitter.com" target="_blank" title="Twitter"><i class="fab fa-twitter"></i></a>
       <a href="https://youtube.com" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
       <a href="https://twitch.tv" target="_blank" title="Twitch"><i class="fab fa-twitch"></i></a>
+      <a href="https://konect.gg" target="_blank" title="Konect">
+        <img src="https://cdn.prod.website-files.com/63e63cfe6e9d6e27c1b3d66d/63e63cfe6e9d6e3d3cb3d68c_konect-logo.png" width="28">
+      </a>
     </div>
   </div>
 
@@ -316,7 +348,9 @@ video {
       <p>STATUS: WAITING...</p>
     </div>
     <div class="icons">
-      <a href="https://vn.tradingview.com/chart/qjYmgyGN/" target="_blank" title="TradingView">📊</a>
+      <a href="https://discord.gg/2W96ej7B" target="_blank" title="Discord">
+        <i class="fab fa-discord"></i>
+      </a>
     </div>
   </div>
 
@@ -375,15 +409,68 @@ function draw(){
 draw();
 
 // FAKE TRADE
-setInterval(()=>{
-  let types=["BUY","SELL"];
-  let pair="XAUUSD";
-  let price=(4670+Math.random()*100).toFixed(2);
-  document.getElementById("tradeBox").innerHTML=
-    `<p>${types[Math.floor(Math.random()*2)]} ${pair}</p>
-     <p>ENTRY: ${price}</p>
-     <p>STATUS: EXECUTED</p>`;
-},5000);
+async function getPrice(symbol) {
+  try {
+    let url = symbol === "XAUUSD"
+      ? "https://api.gold-api.com/price/XAU"
+      : "https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT";
+
+    let res = await fetch(url);
+    let data = await res.json();
+
+    return symbol === "XAUUSD"
+      ? data.price
+      : parseFloat(data.price);
+  } catch {
+    return null;
+  }
+}
+
+let showTrade = true;
+
+async function updateTrade() {
+  let box = document.getElementById("tradeBox");
+
+  if (showTrade) {
+    let symbol = "XAUUSD";
+    let price = await getPrice(symbol);
+
+    // nếu lỗi → dùng BTC
+    if (!price) {
+      symbol = "BTCUSDT";
+      price = await getPrice(symbol);
+    }
+
+    let type = Math.random() > 0.5 ? "BUY" : "SELL";
+    let entry = price + (Math.random() * 10 - 5);
+    let current = price;
+    let pnl = (type === "BUY" ? current - entry : entry - current).toFixed(2);
+
+    box.innerHTML = `
+      <p><b>${symbol}</b></p>
+      <p>${type} @ ${entry.toFixed(2)}</p>
+      <p>NOW: ${current.toFixed(2)}</p>
+      <p style="color:${pnl >= 0 ? 'lime' : 'red'}">
+        PNL: ${pnl}
+      </p>
+    `;
+
+  } else {
+    let trades = Math.floor(Math.random()*20)+5;
+    let balance = (1000 + Math.random()*5000).toFixed(2);
+
+    box.innerHTML = `
+      <p><b>EXNESS</b></p>
+      <p>Trades today: ${trades}</p>
+      <p>Balance: $${balance}</p>
+    `;
+  }
+
+  showTrade = !showTrade;
+}
+
+setInterval(updateTrade, 5000);
+updateTrade();
 
 /* === DISCORD LANYARD LIVE (Presence + Activities) === */
 const DISCORD_USER_ID = "375870617041240064"; // Thay bằng Discord ID thật
@@ -431,11 +518,7 @@ async function updateDiscord() {
     else if(status==="dnd") color="#f04747";
 
     statusText.innerHTML = `<span class="status-dot" style="background:${color}"></span> ${status.toUpperCase()}`;
-
-    // Guild tag
-    const guild = data.data.active_on_guild ? data.data.active_on_guild.name : null;
-    guildTagDiv.textContent = guild ? `[${guild}]` : "";
-
+    
     // Activities
     activityDiv.innerHTML = "";
     const activities = data.data.activities || [];
