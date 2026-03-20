@@ -18,6 +18,24 @@ body {
   cursor: none;
 }
 
+/* Discord status chữ nhật */
+.discord-status-box {
+  margin-top: 15px;
+  padding: 6px 14px;
+  border-radius: 8px;
+  background: rgba(0,0,0,0.3); /* trong suốt */
+  display: inline-block;
+}
+
+.status-text {
+  font-size: 14px;
+  font-weight: bold;
+  color: white;
+}
+
+.status-text.online { color: #43b581; }  /* màu xanh online */
+.status-text.offline { color: gray; }    /* màu xám offline */
+  
 /* VIDEO BACKGROUND */
 video {
   position: fixed;
@@ -216,16 +234,22 @@ body { text-shadow: 0 0 5px rgba(255,255,255,0.2); }
 <div class="container" id="main">
 
   <!-- ESPORT SIDE -->
-  <div class="side left">
-    <h2>ESPORT</h2>
-    <img src="https://lanyard.cnrad.dev/api/375870617041240064" width="250" height="250" style="border-radius: 50%; border: 3px solid cyan;">
-    <div class="icons">
-      <a href="https://discord.gg/2W96ej7B" target="_blank" title="Discord"><i class="fab fa-discord"></i></a>
-      <a href="https://twitter.com" target="_blank" title="Twitter"><i class="fab fa-twitter"></i></a>
-      <a href="https://youtube.com" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
-      <a href="https://twitch.tv" target="_blank" title="Twitch"><i class="fab fa-twitch"></i></a>
-    </div>
+<div class="side left">
+  <h2>ESPORT</h2>
+  <img src="https://lanyard.cnrad.dev/api/375870617041240064" width="250" height="250" style="border-radius: 50%; border: 3px solid cyan;">
+
+  <!-- Discord status chữ nhật trong suốt -->
+  <div class="discord-status-box">
+    <span class="status-text online">ONLINE</span>
   </div>
+
+  <div class="icons">
+    <a href="https://discord.gg/2W96ej7B" target="_blank" title="Discord"><i class="fab fa-discord"></i></a>
+    <a href="https://twitter.com" target="_blank" title="Twitter"><i class="fab fa-twitter"></i></a>
+    <a href="https://youtube.com" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+    <a href="https://twitch.tv" target="_blank" title="Twitch"><i class="fab fa-twitch"></i></a>
+  </div>
+</div>
 
   <!-- TRADER SIDE -->
   <div class="side">
