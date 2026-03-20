@@ -25,8 +25,8 @@ body {
   align-items: center;
   padding: 4px 10px;
   border-radius: 6px;
-  background: rgba(0,0,0,0.25); /* trong suốt */
-  border: 1px solid rgba(255,255,255,0.2); /* viền mỏng nhẹ */
+  background: rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.2);
   font-size: 14px;
   font-weight: bold;
 }
@@ -39,21 +39,15 @@ body {
   display: inline-block;
 }
 
-.status-dot.online { background-color: #43b581; }  /* online xanh */
-.status-dot.offline { background-color: gray; }     /* offline xám */
+.status-dot.online { background-color: #43b581; }
+.status-dot.offline { background-color: gray; }
 
-.status-text {
-  color: white;
-}
 .status-text {
   font-size: 14px;
   font-weight: bold;
   color: white;
 }
 
-.status-text.online { color: #43b581; }  /* màu xanh online */
-.status-text.offline { color: gray; }    /* màu xám offline */
-  
 /* VIDEO BACKGROUND */
 video {
   position: fixed;
@@ -251,11 +245,27 @@ body { text-shadow: 0 0 5px rgba(255,255,255,0.2); }
 <!-- MAIN -->
 <div class="container" id="main">
 
- <!-- Discord status giống Guns.lol -->
-<div class="discord-status-box">
-  <span class="status-dot online"></span>
-  <span class="status-text">ONLINE</span>
-</div>
+  <!-- ESPORT SIDE -->
+  <div class="side left">
+    <h2>ESPORT</h2>
+
+    <!-- Avatar -->
+    <img src="https://lanyard.cnrad.dev/api/375870617041240064" width="250" height="250" style="border-radius: 50%; border: 3px solid cyan;">
+
+    <!-- Discord status kiểu Guns.lol -->
+    <div class="discord-status-box">
+      <span class="status-dot online"></span>
+      <span class="status-text">ONLINE</span>
+    </div>
+
+    <!-- Social icons -->
+    <div class="icons">
+      <a href="https://discord.gg/2W96ej7B" target="_blank" title="Discord"><i class="fab fa-discord"></i></a>
+      <a href="https://twitter.com" target="_blank" title="Twitter"><i class="fab fa-twitter"></i></a>
+      <a href="https://youtube.com" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+      <a href="https://twitch.tv" target="_blank" title="Twitch"><i class="fab fa-twitch"></i></a>
+    </div>
+  </div>
 
   <!-- TRADER SIDE -->
   <div class="side">
