@@ -177,7 +177,7 @@ video {
   gap: 10px;
   padding: 8px 12px;
   border-radius: 10px;
-  background: rgba(50,50,50,0.2); /* transparent gray */
+  background: rgba(50,50,50,0.5); /* slightly opaque gray */
   min-width: 180px;
   max-width: 250px;
 }
@@ -185,15 +185,23 @@ video {
 .discord-lanyard-box img {
   width: 50px;
   height: 50px;
-  border-radius: 6px; /* slight rounding */
-  border: none; /* remove green border */
+  border-radius: 6px;
   object-fit: cover;
+  background-color: #999999; /* gray background */
 }
 
 .discord-lanyard-box .username {
   font-weight: 600;
   color: #fff;
   font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.discord-lanyard-box .badge-icon {
+  width: 18px;
+  height: 18px;
 }
 
 .discord-lanyard-box .status-text {
@@ -211,6 +219,16 @@ video {
   border-radius: 50%;
   background: #43b581; /* online green */
   animation: pulse 1.6s infinite;
+}
+
+.discord-lanyard-box .guild-tag {
+  background-color: #7289da;
+  color: #fff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.75em;
+  margin-top: 4px;
+  display: inline-block;
 }
 
 @keyframes pulse {
@@ -257,11 +275,11 @@ video {
 
     <!-- Discord Lanyard live rectangle -->
     <div class="discord-lanyard-box">
-      <img src="https://lanyard.cnrad.dev/api/375870617041240064" alt="avatar">
+      <img src="" alt="avatar">
       <div>
-        <div class="username">moreira.borges 🔥 PANU</div>
+        <div class="username">Loading...</div>
         <div class="status-text">
-          <span class="status-dot"></span> ONLINE
+          <span class="status-dot"></span> Loading
         </div>
       </div>
     </div>
@@ -351,7 +369,70 @@ setInterval(()=>{
      <p>ENTRY: ${price}</p>
      <p>STATUS: EXECUTED</p>`;
 },5000);
-</script>
 
+/* === DISCORD LANYARD LIVE UPDATE === */
+const DISCORD_USER_ID = "375870617041240064"; // Thay bằng Discord ID thật
+const discordBox = document.querySelector(".discord-lanyard-box");
+const avatarImg = discordBox.querySelector("img");
+const usernameDiv = discordBox.querySelector(".username");
+const statusText = discordBox.querySelector(".status-text");
+
+const badgeIcons = {
+  1: "https://cdn.discordapp.com/badges/staff.png",
+  2: "https://cdn.discordapp.com/badges/partner.png",
+  64: "https://cdn.discordapp.com/badges/hypesquad.png",
+  128: "https://cdn.discordapp.com/badges/bughunter.png"
+};
+
+async function updateDiscordLanyard() {
+  try {
+    const res = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_USER_ID}`);
+    const data = await res.json();
+    if(!data.success) return;
+
+    const user = data.data.discord_user;
+
+    // Avatar
+    const isGif = user.avatar && user.avatar.startsWith("a_");
+    const ext = isGif ? "gif" : "png";
+    avatarImg.src = `https://cdn.discordapp.com/avatars/${DISCORD_USER_ID}/${user.avatar}.${ext}?size=128`;
+    avatarImg.style.backgroundColor = "#999999";
+
+    // Username + Badges
+    usernameDiv.textContent = `${user.username}#${user.discriminator}`;
+    usernameDiv.querySelectorAll(".badge-icon").forEach(b=>b.remove());
+    const flags = user.public_flags || 0;
+    Object.keys(badgeIcons).forEach(bit=>{
+      bit=parseInt(bit);
+      if(flags & bit){
+        const img = document.createElement("img");
+        img.src = badgeIcons[bit];
+        img.className = "badge-icon";
+        usernameDiv.appendChild(img);
+      }
+    });
+
+    // Status
+    const status = data.data.discord_status || "offline";
+    statusText.innerHTML = `<span class="status-dot" style="background:${status==='online'?'#43b581':status==='idle'?'#faa61a':'#747f8d'}"></span> ${status.toUpperCase()}`;
+
+    // Guild tag
+    const guildName = data.data.active_on_guild ? data.data.active_on_guild.name : null;
+    if(guildName){
+      if(!discordBox.querySelector(".guild-tag")){
+        const guildTagEl = document.createElement("div");
+        guildTagEl.className="guild-tag";
+        discordBox.appendChild(guildTagEl);
+      }
+      discordBox.querySelector(".guild-tag").textContent = `[${guildName}]`;
+    }
+
+  } catch(err){ console.error(err); }
+}
+
+updateDiscordLanyard();
+setInterval(updateDiscordLanyard,15000);
+
+</script>
 </body>
 </html>
