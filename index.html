@@ -3,9 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <title>𝖒𝖔𝖗𝖊𝖎𝖗𝖆</title>
-<meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="pragma" content="no-cache">
-<meta http-equiv="expires" content="0">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body {
@@ -15,9 +14,10 @@ body {
   cursor: crosshair;
   user-select: none;
   overflow: hidden;
+  background: black;
 }
 
-/* VIDEO BACKGROUND */
+/* VIDEO */
 video {
   position: fixed;
   top: 0;
@@ -29,7 +29,7 @@ video {
   z-index: -1;
 }
 
-/* FILM GRAIN */
+/* NOISE */
 body::after {
   content: "";
   position: fixed;
@@ -51,14 +51,19 @@ body::after {
   align-items: center;
   cursor: pointer;
   z-index: 10;
-  transition: 0.5s;
+  transition: opacity 0.6s ease;
 }
 
+#intro.hide {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* GLITCH */
 #intro h1 {
   animation: glitch 1s infinite;
 }
 
-/* GLITCH */
 @keyframes glitch {
   0% {text-shadow: 2px 0 red;}
   50% {text-shadow: -2px 0 blue;}
@@ -73,14 +78,19 @@ body::after {
   transition: 1s;
 }
 
+.container.show {
+  opacity: 1;
+}
+
+/* PANEL */
 .side {
   flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  backdrop-filter: blur(4px);
-  transition: 0.4s;
+  backdrop-filter: blur(6px);
+  transition: 0.3s;
 }
 
 .left {
@@ -88,23 +98,42 @@ body::after {
 }
 
 .side:hover {
-  background: rgba(255,255,255,0.05);
+  background: rgba(255,255,255,0.08);
 }
 
+/* BUTTON */
 button {
   margin-top: 10px;
-  padding: 10px;
+  padding: 10px 20px;
   border: 1px solid white;
   background: none;
   color: white;
   cursor: pointer;
+  transition: 0.3s;
 }
 
-/* MUSIC BUTTON */
+button:hover {
+  background: white;
+  color: black;
+}
+
+/* MUSIC BTN */
 #toggleMusic {
   position: fixed;
   bottom: 20px;
   right: 20px;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .left {
+    border-right: none;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
 }
 </style>
 </head>
@@ -112,11 +141,11 @@ button {
 <body>
 
 <!-- VIDEO -->
-<video autoplay muted loop>
+<video autoplay muted loop playsinline>
   <source src="https://cdn.coverr.co/videos/coverr-anime-style-city-1560/1080p.mp4">
 </video>
 
-<button id="toggleMusic" onclick="toggleMusic()">MUSIC</button>
+<button id="toggleMusic" onclick="toggleMusic()">MUSIC: OFF</button>
 
 <!-- INTRO -->
 <div id="intro" onclick="enterSite()">
@@ -130,7 +159,6 @@ button {
   <h1>ESPORT</h1>
   <p>ALL GAMES PLAYER</p>
 
-  <!-- DISCORD STATUS -->
   <img src="https://lanyard.cnrad.dev/api/375870617041240064" width="200">
 
   <button onclick="window.open('https://discord.gg/2W96ej7B')">JOIN</button>
@@ -139,9 +167,11 @@ button {
 <div class="side">
   <h1>TRADER</h1>
 
-  <!-- TRADINGVIEW -->
-  <iframe src="https://s.tradingview.com/widgetembed/?symbol=OANDA:XAUUSD"
-  width="300" height="200"></iframe>
+  <iframe 
+    src="https://s.tradingview.com/widgetembed/?symbol=OANDA:XAUUSD"
+    width="300" height="200"
+    frameborder="0">
+  </iframe>
 
   <button onclick="window.open('https://vn.tradingview.com/chart/qjYmgyGN/')">SIGNAL</button>
 </div>
@@ -153,21 +183,28 @@ button {
 </audio>
 
 <script>
+let music = document.getElementById("music");
+let btn = document.getElementById("toggleMusic");
 let isPlaying = false;
 
 function enterSite() {
-  document.getElementById("intro").style.display = "none";
-  document.getElementById("main").style.opacity = "1";
-  document.getElementById("music").play();
-  isPlaying = true;
+  document.getElementById("intro").classList.add("hide");
+  document.getElementById("main").classList.add("show");
+
+  // Play music after user click (safe)
+  music.play().then(() => {
+    isPlaying = true;
+    btn.innerText = "MUSIC: ON";
+  }).catch(() => {});
 }
 
 function toggleMusic() {
-  let music = document.getElementById("music");
   if (isPlaying) {
     music.pause();
+    btn.innerText = "MUSIC: OFF";
   } else {
     music.play();
+    btn.innerText = "MUSIC: ON";
   }
   isPlaying = !isPlaying;
 }
