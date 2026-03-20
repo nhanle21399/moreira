@@ -267,7 +267,7 @@ video {
 
 <!-- INTRO -->
 <div id="intro" onclick="enterSite()">
-  <h1>ENTER SYSTEM</h1>
+  <h1>"TALK LESS, DO MORE</h1>
 </div>
 
 <!-- HERO -->
@@ -278,7 +278,7 @@ video {
 
 <!-- TERMINAL -->
 <div id="terminal">
-  <p> "talk less, do more"</p>
+  <p> "idk"</p>
 </div>
 
 <!-- MAIN -->
@@ -455,53 +455,6 @@ async function updateDiscord() {
     guildTagDiv.textContent="";
     activityDiv.innerHTML="";
   }
-}
-
-updateDiscord();
-setInterval(updateDiscord,15000);
-
-    // Avatar
-    const isGif = user.avatar && user.avatar.startsWith("a_");
-    const ext = isGif ? "gif" : "png";
-    avatarImg.src = `https://cdn.discordapp.com/avatars/${DISCORD_USER_ID}/${user.avatar}.${ext}?size=128`;
-    avatarImg.style.backgroundColor = "#999999";
-
-    // Username + Badges
-    usernameDiv.textContent = `${user.username}#${user.discriminator}`;
-    usernameDiv.querySelectorAll(".badge-icon").forEach(b=>b.remove());
-    const flags = user.public_flags || 0;
-    Object.keys(badgeIcons).forEach(bit=>{
-      bit=parseInt(bit);
-      if(flags & bit){
-        const img = document.createElement("img");
-        img.src = badgeIcons[bit];
-        img.className = "badge-icon";
-        usernameDiv.appendChild(img);
-      }
-    });
-
-    // Status
-    const status = data.data.discord_status || "offline";
-    statusText.innerHTML = `<span class="status-dot" style="background:${status==='online'?'#43b581':status==='idle'?'#faa61a':'#747f8d'}"></span> ${status.toUpperCase()}`;
-
-    // Guild tag
-    const guild = data.data.active_on_guild ? data.data.active_on_guild.name : null;
-    if(guild) guildTagDiv.textContent = `[${guild}]`;
-    else guildTagDiv.textContent = "";
-
-    // Activities
-    activityDiv.innerHTML = "";
-    const activities = data.data.activities || [];
-    activities.forEach(act=>{
-      let icon = act.assets?.small_image ? `<img src="https://cdn.discordapp.com/app-assets/${act.application_id}/${act.assets.small_image}.png" width="14" height="14"> `:"";
-      let name = act.name || "";
-      let details = act.details ? `: ${act.details}` : "";
-      let activityEl = document.createElement("div");
-      activityEl.innerHTML = `${icon}${name}${details}`;
-      activityDiv.appendChild(activityEl);
-    });
-
-  } catch(e){ console.error(e); }
 }
 
 updateDiscord();
