@@ -303,19 +303,6 @@ function animateCursor(){
 }
 animateCursor();
 
-// HERO TYPING
-let text="TRADER | GAMER | DEV";
-let i=0;
-let typingEl=document.getElementById("typing");
-function typing(){
-  if(i<text.length){
-    typingEl.innerHTML+=text[i];
-    i++;
-    setTimeout(typing,80);
-  }
-}
-typing();
-
 // PARTICLES
 let canvas=document.getElementById("particles");
 let ctx=canvas.getContext("2d");
