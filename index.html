@@ -170,23 +170,26 @@ video {
   .container { flex-direction: column; }
 }
 
-/* ===== Discord Lanyard rectangle professional ===== */
+/* ===== Discord Lanyard rectangle professional (UPDATED) ===== */
 .discord-lanyard-box {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 12px;
-  border-radius: 10px;
-  background: rgba(50,50,50,0.5);
-  min-width: 180px;
-  max-width: 250px;
+  gap: 12px;
+  padding: 10px 15px;
+  border-radius: 12px;
+  background: rgba(30,30,30,0.7);
+  min-width: 200px;
+  max-width: 280px;
   flex-direction: row;
+  transition: all 0.3s;
 }
 
+.discord-lanyard-box:hover { background: rgba(50,50,50,0.9); }
+
 .discord-lanyard-box img {
-  width: 50px;
-  height: 50px;
-  border-radius: 6px;
+  width: 55px;
+  height: 55px;
+  border-radius: 8px;
   object-fit: cover;
   background-color: #999999;
 }
@@ -194,7 +197,7 @@ video {
 .discord-lanyard-box .username {
   font-weight: 600;
   color: #fff;
-  font-size: 14px;
+  font-size: 15px;
   display: flex;
   align-items: center;
   gap: 4px;
@@ -213,14 +216,13 @@ video {
   display: flex;
   align-items: center;
   gap: 6px;
-  flex-wrap: wrap;
 }
 
 .discord-lanyard-box .status-dot {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  background: #43b581; /* online green */
+  background: #747f8d;
   animation: pulse 1.6s infinite;
 }
 
@@ -237,7 +239,7 @@ video {
 .discord-lanyard-box .activity {
   font-size: 12px;
   color: #a0a0a0;
-  margin-top: 2px;
+  margin-top: 4px;
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
@@ -248,6 +250,7 @@ video {
   50% { transform: scale(1.4); opacity: 0.7; }
   100% { transform: scale(1); opacity: 1; }
 }
+
 </style>
 </head>
 
@@ -391,13 +394,6 @@ const statusText = discordBox.querySelector(".status-text");
 const guildTagDiv = discordBox.querySelector(".guild-tag");
 const activityDiv = discordBox.querySelector(".activity");
 
-const badgeIcons = {
-  1: "https://cdn.discordapp.com/badges/staff.png",
-  2: "https://cdn.discordapp.com/badges/partner.png",
-  64: "https://cdn.discordapp.com/badges/hypesquad.png",
-  128: "https://cdn.discordapp.com/badges/bughunter.png"
-};
-
 async function updateDiscord() {
   try {
     const res = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_USER_ID}`);
@@ -405,6 +401,64 @@ async function updateDiscord() {
     if(!data.success) return;
 
     const user = data.data.discord_user;
+
+    // Avatar
+    const isGif = user.avatar && user.avatar.startsWith("a_");
+    const ext = isGif ? "gif" : "png";
+    avatarImg.src = user.avatar ? `https://cdn.discordapp.com/avatars/${DISCORD_USER_ID}/${user.avatar}.${ext}?size=128` : "https://via.placeholder.com/55";
+    avatarImg.style.backgroundColor = "#999999";
+
+    // Username + Badges
+    usernameDiv.textContent = `${user.username}#${user.discriminator}`;
+    // Remove old badges
+    usernameDiv.querySelectorAll(".badge-icon").forEach(b=>b.remove());
+    const flags = user.public_flags || 0;
+    Object.keys(badgeIcons).forEach(bit=>{
+      bit=parseInt(bit);
+      if(flags & bit){
+        const img = document.createElement("img");
+        img.src = badgeIcons[bit];
+        img.className = "badge-icon";
+        usernameDiv.appendChild(img);
+      }
+    });
+
+    // Status
+    const status = data.data.discord_status || "offline";
+    let color = "#747f8d"; // offline gray
+    if(status==="online") color="#43b581";
+    else if(status==="idle") color="#faa61a";
+    else if(status==="dnd") color="#f04747";
+
+    statusText.innerHTML = `<span class="status-dot" style="background:${color}"></span> ${status.toUpperCase()}`;
+
+    // Guild tag
+    const guild = data.data.active_on_guild ? data.data.active_on_guild.name : null;
+    guildTagDiv.textContent = guild ? `[${guild}]` : "";
+
+    // Activities
+    activityDiv.innerHTML = "";
+    const activities = data.data.activities || [];
+    activities.forEach(act=>{
+      let icon = act.assets?.small_image ? `<img src="https://cdn.discordapp.com/app-assets/${act.application_id}/${act.assets.small_image}.png" width="14" height="14"> `:"";
+      let name = act.name || "";
+      let details = act.details ? `: ${act.details}` : "";
+      let activityEl = document.createElement("div");
+      activityEl.innerHTML = `${icon}${name}${details}`;
+      activityDiv.appendChild(activityEl);
+    });
+
+  } catch(e){ 
+    console.error("Discord Lanyard error:", e);
+    usernameDiv.textContent="Error";
+    statusText.innerHTML='<span class="status-dot" style="background:#747f8d"></span> OFFLINE';
+    guildTagDiv.textContent="";
+    activityDiv.innerHTML="";
+  }
+}
+
+updateDiscord();
+setInterval(updateDiscord,15000);
 
     // Avatar
     const isGif = user.avatar && user.avatar.startsWith("a_");
