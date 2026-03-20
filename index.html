@@ -36,7 +36,7 @@ video {
    position: fixed;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle, rgba(0,0,0,0.03), rgba(0,0,0,0.2));
+  background: radial-gradient(circle, rgba(0,0,0,0.01), rgba(0,0,0,0.05));
   z-index: -1;
 }
 
@@ -137,10 +137,10 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  backdrop-filter: blur(4px);   /* blur nhẹ, trong suốt */
-  background: rgba(0,0,0,0.1); /* giảm opacity */
-  box-shadow: none;             /* bỏ shadow cứng */
-  border: none;                 /* bỏ border trắng */
+  background: transparent;      /* không che video */
+  backdrop-filter: none;        /* bỏ blur nếu muốn */
+  box-shadow: none;             /* bỏ shadow */
+  border: none;                 /* bỏ line trắng */
 }
 
 .left {
