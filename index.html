@@ -99,7 +99,7 @@ video {
   position: absolute;
   top: 35%;
   width: 100%;
-  text-align: center;
+  text-align: c;
   font-size: 14px;
   opacity: 0;
   transition: 1s;
@@ -120,8 +120,8 @@ video {
   flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  align-items: c;
+  justify-content: c;
   background: transparent;
 }
 
@@ -151,7 +151,7 @@ video {
 .icons {
   margin-top: 20px;
   display: flex;
-  justify-content: center;
+  justify-content: c;
   gap: 20px;
 }
 .icons img {
@@ -307,7 +307,7 @@ canvas, .overlay {
 <div class="cursor" id="cursor"></div>
 
 <!-- INTRO -->
-<div id="intro" onclick="enterSite()">
+<div id="intro">
   <h1>"TALK LESS, DO MORE"</h1>
 </div>
 
@@ -386,6 +386,11 @@ function toggleMusic() {
 
 // ENTER SITE
 function enterSite() {
+  let intro = document.getElementById("intro");
+  let main = document.getElementById("main");
+  let hero = document.getElementById("hero");
+  let terminal = document.getElementById("terminal");
+
   intro.classList.add("hide");
   main.classList.add("show");
   hero.classList.add("show");
@@ -561,6 +566,7 @@ async function updateDiscord() {
   }
 }
 
+document.getElementById("intro").addEventListener("click", enterSite);
 
 updateDiscord();
 setInterval(updateDiscord,15000);
