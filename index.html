@@ -376,8 +376,6 @@ video {
 }
 
 .name {
-  display: inline-flex;
-  align-items: center;
   font-weight: 600;
   font-size: 15px;
 }
@@ -430,9 +428,6 @@ video {
   <div class="info">
     <div class="name" id="name">
   Loading...
-  <span class="badges">
-  <img src="https://cdn.discordapp.com/badge-icons/4b3c11cba9c9bfa2.png">
-</span>
 </div>
     <div class="tag" id="tag"></div>
     <div class="activity" id="activity"></div>
@@ -635,14 +630,7 @@ async function updateDiscord() {
     }
 
     // name + badge
-    name.innerHTML = `
-      ${user.username}
-      <span class="badges">
-        <img src="https://raw.githubusercontent.com/edent/SuperTinyIcons/master/images/svg/discord.svg" title="Nitro">
-        <img src="https://cdn-icons-png.flaticon.com/512/1055/1055687.png" title="Developer">
-        <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" title="Booster">
-      </span>
-    `;
+name.textContent = user.username;
 
     tag.textContent = user.global_name || user.username;
 
