@@ -329,15 +329,15 @@ video {
 
 .badges {
   display: inline-flex;
-  gap: 5px;
-  margin-left: 6px;
+  gap: 3px;
+  margin-left: 4px;
+  transform: translateY(1px);
 }
 
 .badges img {
-  width: 18px;
-  height: 18px;
-  opacity: 0.9;
-  transition: all 0.2s ease;
+  width: 16px;
+  height: 16px;
+  opacity: 0.95;
 }
 
 .badges img:hover {
@@ -376,10 +376,11 @@ video {
 }
 
 .name {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  flex-wrap: wrap;
-}  
+  font-weight: 600;
+  font-size: 15px;
+}
   
 </style>
 
@@ -430,9 +431,7 @@ video {
     <div class="name" id="name">
   Loading...
   <span class="badges">
-  <img src="https://cdn.discordapp.com/badge-icons/4b3c11cba9c9bfa2.png" title="Nitro">
-  <img src="https://cdn.discordapp.com/badge-icons/9f00b18e2927d44f.png" title="Early Supporter">
-  <img src="https://cdn.discordapp.com/badge-icons/512f9f35b5e5c0c1.png" title="Active Developer">
+  <img src="https://cdn.discordapp.com/badge-icons/4b3c11cba9c9bfa2.png">
 </span>
 </div>
     <div class="tag" id="tag"></div>
