@@ -60,11 +60,15 @@ video {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 10;
+  z-index: 9999;
   cursor: pointer;
   transition: 0.8s;
 }
-#intro.hide { opacity: 0; pointer-events: none; }
+#intro.hide {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
 #intro h1 { animation: glitch 1s infinite; }
 
 /* GLITCH */
@@ -229,6 +233,9 @@ canvas, .overlay {
   pointer-events: none;
 }
 
+video {
+  pointer-events: none;
+}
 /* CURSOR */
 .cursor {
   width: 14px;
@@ -487,7 +494,12 @@ function enterSite() {
   main.classList.add("show");
   hero.classList.add("show");
   setTimeout(()=>{ terminal.classList.add("show"); },1000);
-  music.play().then(()=>{ isPlaying=true; btn.innerText="MUSIC: ON"; });
+  music.play().then(()=>{
+  isPlaying = true;
+  btn.innerText="MUSIC: ON";
+}).catch(()=>{
+  console.log("Autoplay blocked");
+});
 }
 
 // CURSOR
@@ -618,22 +630,23 @@ async function updateDiscord() {
     const data = json.data;
     const user = data.discord_user;
 
-    // avatar fix
+    // avatar
     if (user.avatar) {
       avatar.src = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
     } else {
       avatar.src = `https://cdn.discordapp.com/embed/avatars/0.png`;
     }
 
-    // name
-   name.innerHTML = `
-  ${user.username}
-  <span class="badges">
-    <img src="https://raw.githubusercontent.com/edent/SuperTinyIcons/master/images/svg/discord.svg" title="Nitro">
-    <img src="https://cdn-icons-png.flaticon.com/512/1055/1055687.png" title="Developer">
-    <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" title="Booster">
-  </span>
-`;
+    // name + badge
+    name.innerHTML = `
+      ${user.username}
+      <span class="badges">
+        <img src="https://raw.githubusercontent.com/edent/SuperTinyIcons/master/images/svg/discord.svg" title="Nitro">
+        <img src="https://cdn-icons-png.flaticon.com/512/1055/1055687.png" title="Developer">
+        <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" title="Booster">
+      </span>
+    `;
+
     tag.textContent = user.global_name || user.username;
 
     // status
@@ -649,55 +662,54 @@ async function updateDiscord() {
     // activity
     activity.innerHTML = "";
 
-const activities = data.activities || [];
+    const activities = data.activities || [];
 
-// Spotify riêng (đẹp hơn)
-if (data.spotify) {
-  const spotifyEl = document.createElement("div");
-  spotifyEl.innerHTML = `
-    🎧 ${data.spotify.song}
-    <div style="font-size:11px;color:#aaa">
-      ${data.spotify.artist}
-    </div>
-  `;
-  activity.appendChild(spotifyEl);
-}
+    if (data.spotify) {
+      const spotifyEl = document.createElement("div");
+      spotifyEl.innerHTML = `
+        🎧 ${data.spotify.song}
+        <div style="font-size:11px;color:#aaa">
+          ${data.spotify.artist}
+        </div>
+      `;
+      activity.appendChild(spotifyEl);
+    }
 
-// ALL activities
-activities.forEach(act => {
+    activities.forEach(act => {
+      let text = "";
+      const types = ["Playing", "Streaming", "Listening", "Watching", "Custom", "Competing"];
+      const typeText = types[act.type] || "";
 
-  let text = "";
+      if (act.type === 4) {
+        text = `💬 ${act.state || ""}`;
+      } else {
+        text = `${typeText} ${act.name || ""}`;
+        if (act.details) text += ` • ${act.details}`;
+        if (act.state) text += ` (${act.state})`;
+      }
 
-  // type mapping
-  const types = ["Playing", "Streaming", "Listening", "Watching", "Custom", "Competing"];
-  const typeText = types[act.type] || "";
+      const el = document.createElement("div");
+      el.innerHTML = `<span style="color:cyan">${text}</span>`;
+      activity.appendChild(el);
+    });
 
-  if (act.type === 4) {
-    // custom status
-    text = `💬 ${act.state || ""}`;
-  } else {
-    text = `${typeText} ${act.name || ""}`;
+    if (!data.spotify && activities.length === 0) {
+      activity.textContent = "Idle";
+    }
 
-    if (act.details) text += ` • ${act.details}`;
-    if (act.state) text += ` (${act.state})`;
-  }
-
-  const el = document.createElement("div");
-  el.innerHTML = `<span style="color:cyan">${text}</span>`;
-  activity.appendChild(el);
-});
-
-// fallback
-if (!data.spotify && activities.length === 0) {
-  activity.textContent = "Idle";
+  } catch (err) {
+    console.log("Discord API error:", err);
   }
 }
-
+  
 updateDiscord();
 setInterval(updateDiscord,15000);
 
-document.getElementById("intro").addEventListener("click", enterSite);
-    
+document.getElementById("intro").addEventListener("click", () => {
+  console.log("CLICK OK");
+  enterSite();
+});
+  
 </script>
 </body>
 </html>
