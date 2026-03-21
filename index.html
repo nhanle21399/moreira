@@ -289,12 +289,6 @@ canvas, .overlay {
   gap: 4px;
   flex-wrap: wrap;
 }
-
-.discord-lanyard-box .badge-icon {
-  width: 18px;
-  height: 18px;
-}
-
 .discord-lanyard-box .status-text {
   font-size: 13px;
   font-weight: 500;
@@ -311,17 +305,6 @@ canvas, .overlay {
   background: #747f8d;
   animation: pulse 1.6s infinite;
 }
-
-.discord-lanyard-box .guild-tag {
-  background-color: #7289da;
-  color: #fff;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-size: 0.75em;
-  margin-top: 4px;
-  display: inline-block;
-}
-
 .discord-lanyard-box .activity {
   font-size: 12px;
   color: #a0a0a0;
@@ -404,8 +387,6 @@ canvas, .overlay {
   <div class="side">
     <h2>TRADER</h2>
     <div class="card" id="tradeBox">
-      <p>PAIR: XAUUSD</p>
-      <p>STATUS: WAITING...</p>
     </div>
     <div class="icons">
       <a href="https://discord.gg/2W96ej7B" target="_blank" title="Discord">
@@ -491,18 +472,10 @@ async function getPrice(symbol) {
   }
 }
 
-let showTrade = true;
-
 let currentTrade = null;
 let tradeStartTime = Date.now();
-
+  
 async function updateTrade() {
-
-  if (Date.now() - tradeStartTime > 30000) {
-    currentTrade = null;
-    tradeStartTime = Date.now();
-  }
-
   let box = document.getElementById("tradeBox");
 
   let day = new Date().getDay();
@@ -511,6 +484,13 @@ async function updateTrade() {
   let price = await getPrice(symbol);
   if (!price) return;
 
+  // reset trade sau 30s
+  if (Date.now() - tradeStartTime > 30000) {
+    currentTrade = null;
+    tradeStartTime = Date.now();
+  }
+
+  // tạo trade mới
   if (!currentTrade) {
     let type = Math.random() > 0.5 ? "BUY" : "SELL";
     let lot = (Math.random() * 0.5 + 0.01).toFixed(2);
@@ -525,7 +505,6 @@ async function updateTrade() {
 
   if (currentTrade.symbol !== symbol) {
     currentTrade = null;
-    tradeStartTime = Date.now();
     return;
   }
 
@@ -560,17 +539,28 @@ const tag = document.getElementById("tag");
 const activity = document.getElementById("activity");
 const statusDot = document.getElementById("statusDot");
 
+const DISCORD_USER_ID = "375870617041240064";
+
 async function updateDiscord() {
   try {
     const res = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_USER_ID}`);
     const json = await res.json();
-    if (!json.success) return;
+
+    if (!json.success || !json.data) {
+      name.textContent = "Not Connected";
+      activity.textContent = "";
+      return;
+    }
 
     const data = json.data;
     const user = data.discord_user;
 
-    // avatar
-    avatar.src = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
+    // avatar fix
+    if (user.avatar) {
+      avatar.src = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
+    } else {
+      avatar.src = `https://cdn.discordapp.com/embed/avatars/0.png`;
+    }
 
     // name
     name.textContent = user.username;
@@ -590,15 +580,16 @@ async function updateDiscord() {
     const act = data.activities?.[0];
     activity.textContent = act
       ? `${act.name} ${act.details || ""}`
-      : "No activity";
+      : "Idle";
 
   } catch (e) {
-    console.error(e);
+    console.error("Discord error:", e);
+    name.textContent = "Error";
   }
 }
 
 document.getElementById("intro").addEventListener("click", enterSite);
-
+  
 updateDiscord();
 setInterval(updateDiscord,15000);
 </script>
