@@ -197,7 +197,7 @@ video {
 .icons {
   margin-top: 20px;
   display: flex;
-  justify-content: c;
+  justify-content: center;
   gap: 20px;
 }
 .icons img {
@@ -320,6 +320,62 @@ canvas, .overlay {
   100% { transform: scale(1); opacity: 1; }
 }
 
+.badges {
+  display: inline-flex;
+  gap: 5px;
+  margin-left: 6px;
+}
+
+.badges img {
+  width: 16px;
+  height: 16px;
+  opacity: 0.8;
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.badges img:hover {
+  opacity: 1;
+  transform: scale(1.25);
+  filter: drop-shadow(0 0 6px #5865F2);
+}
+
+/* Hover Discord real */
+.discord-card {
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.discord-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow:
+    0 10px 30px rgba(0,0,0,0.6),
+    0 0 20px rgba(88,101,242,0.3);
+}
+
+/* Avatar smooth */
+.avatar-wrap img {
+  transition: all 0.3s ease;
+}
+
+.discord-card:hover .avatar-wrap img {
+  transform: scale(1.1);
+}
+
+/* Status glow */
+#statusDot {
+  transition: all 0.3s ease;
+}
+
+.discord-card:hover #statusDot {
+  box-shadow: 0 0 10px currentColor;
+}
+
+.name {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}  
+  
 </style>
 
 </head>
@@ -366,7 +422,14 @@ canvas, .overlay {
   </div>
 
   <div class="info">
-    <div class="name" id="name">Loading...</div>
+    <div class="name" id="name">
+  Loading...
+  <span class="badges">
+    <img src="https://cdn.discordapp.com/badge-icons/4b3c11cba9c9bfa2.png" title="Nitro">
+    <img src="https://cdn.discordapp.com/badge-icons/9f00b18e2927d44f.png" title="Developer">
+    <img src="https://cdn.discordapp.com/badge-icons/51040c8a64c2c7f7.png" title="Booster">
+  </span>
+</div>
     <div class="tag" id="tag"></div>
     <div class="activity" id="activity"></div>
   </div>
@@ -563,7 +626,14 @@ async function updateDiscord() {
     }
 
     // name
-    name.textContent = user.username;
+   name.innerHTML = `
+  ${user.username}
+  <span class="badges">
+    <img src="https://raw.githubusercontent.com/edent/SuperTinyIcons/master/images/svg/discord.svg" title="Nitro">
+    <img src="https://cdn-icons-png.flaticon.com/512/1055/1055687.png" title="Developer">
+    <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" title="Booster">
+  </span>
+`;
     tag.textContent = user.global_name || user.username;
 
     // status
@@ -577,21 +647,57 @@ async function updateDiscord() {
     statusDot.style.background = colors[status] || "#747f8d";
 
     // activity
-    const act = data.activities?.[0];
-    activity.textContent = act
-      ? `${act.name} ${act.details || ""}`
-      : "Idle";
+    activity.innerHTML = "";
 
-  } catch (e) {
-    console.error("Discord error:", e);
-    name.textContent = "Error";
+const activities = data.activities || [];
+
+// Spotify riêng (đẹp hơn)
+if (data.spotify) {
+  const spotifyEl = document.createElement("div");
+  spotifyEl.innerHTML = `
+    🎧 ${data.spotify.song}
+    <div style="font-size:11px;color:#aaa">
+      ${data.spotify.artist}
+    </div>
+  `;
+  activity.appendChild(spotifyEl);
+}
+
+// ALL activities
+activities.forEach(act => {
+
+  let text = "";
+
+  // type mapping
+  const types = ["Playing", "Streaming", "Listening", "Watching", "Custom", "Competing"];
+  const typeText = types[act.type] || "";
+
+  if (act.type === 4) {
+    // custom status
+    text = `💬 ${act.state || ""}`;
+  } else {
+    text = `${typeText} ${act.name || ""}`;
+
+    if (act.details) text += ` • ${act.details}`;
+    if (act.state) text += ` (${act.state})`;
+  }
+
+  const el = document.createElement("div");
+  el.innerHTML = `<span style="color:cyan">${text}</span>`;
+  activity.appendChild(el);
+});
+
+// fallback
+if (!data.spotify && activities.length === 0) {
+  activity.textContent = "Idle";
   }
 }
 
-document.getElementById("intro").addEventListener("click", enterSite);
-  
 updateDiscord();
 setInterval(updateDiscord,15000);
+
+document.getElementById("intro").addEventListener("click", enterSite);
+    
 </script>
 </body>
 </html>
