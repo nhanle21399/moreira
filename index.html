@@ -45,7 +45,29 @@ video {
 
 /* TRADE BOX */
 #tradeBox {
-  transition: opacity 0.3s ease;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+#tradeBox b {
+  font-size: 16px;
+  color: cyan;
+  text-shadow: 0 0 8px cyan;
+}
+  
+#profitToday, #winrate {
+  transition: all 0.25s ease;
+}
+
+#winrate {
+  animation: glowPulse 2s infinite;
+}
+  
+/* glow breathing */
+@keyframes glowPulse {
+  0% { text-shadow: 0 0 5px currentColor; }
+  50% { text-shadow: 0 0 20px currentColor; }
+  100% { text-shadow: 0 0 5px currentColor; }
 }
   
 /* PARTICLES */
@@ -654,64 +676,142 @@ function draw(){
 }
 draw();
 
-/* Real Trade */  
-let currentTrade = null;
-let tradeStartTime = Date.now();
-  
-async function updateTrade() {
-  let box = document.getElementById("tradeBox");
+/* REAL TRADE */
+let lastWinrate = 0;
+let winrateAnimId = null;
+let isFetching = false;
+
+async function updateAll() {
+  if (isFetching) return;
+  isFetching = true;
 
   try {
     let res = await fetch("https://mt5-api-wsgs.onrender.com/trade");
     let data = await res.json();
 
+    // ================= TRADE =================
+    let box = document.getElementById("tradeBox");
     let t = data?.trades?.[0];
 
     if (!t) {
-      box.innerHTML = "<p>No trade</p>";
-      return;
+      box.innerHTML = `<p style="opacity:0.5">No active trade</p>`;
+      box.style.opacity = 0.6;
+    } else {
+      let pnl = Number(t.profit || 0);
+      let pnlColor = pnl >= 0 ? "#00ff9f" : "#ff4d4d";
+
+      box.style.opacity = 1;
+
+      box.innerHTML = `
+        <div class="live-label">
+          <span class="live-dot"></span>
+          LIVE TRADE
+        </div>
+
+        <p><b>${t.symbol}</b> • ${t.type}</p>
+
+        <p>Entry: ${Number(t.entry).toFixed(2)} (${t.lot} lot)</p>
+
+        <p>Price: ${Number(t.current).toFixed(2)}</p>
+
+        <p style="color:${pnlColor}; font-size:16px; font-weight:bold;">
+          ${pnl >= 0 ? "▲" : "▼"} $${Math.abs(pnl).toFixed(2)}
+        </p>
+      `;
+
+      // smooth pulse
+      box.animate(
+        [{ transform: "scale(1)" }, { transform: "scale(1.05)" }, { transform: "scale(1)" }],
+        { duration: 300 }
+      );
     }
 
-    box.innerHTML = `
-      <p class="live-label">
-        <span class="live-dot"></span>
-        LIVE TRADE
-      </p>
-      <p><b>${t.symbol}</b> • ${t.type}</p>
-      <p>Entry: ${t.entry} (${t.lot} lot)</p>
-      <p>Price: ${t.current}</p>
-      <p style="color:${t.profit >= 0 ? '#00ff9f' : '#ff4d4d'}">
-        PNL: ${t.profit >= 0 ? '+' : ''}$${t.profit}
-      </p>
-    `;
-    
+    // ================= PERFORMANCE =================
+    if (!data.performance) return;
+    let perf = data.performance;
+
+    // BALANCE
+    document.getElementById("balance").innerText =
+      "$" + Number(perf.balance || 0).toFixed(2);
+
+    // TRADES
+    document.getElementById("tradesToday").innerText =
+      perf.tradesToday || 0;
+
+    // ================= PROFIT =================
+    let profitEl = document.getElementById("profitToday");
+    let profit = Number(perf.profitToday || 0);
+
+    profitEl.innerText =
+      (profit > 0 ? "↑ $" : profit < 0 ? "↓ $" : "$") +
+      profit.toFixed(2);
+
+    profitEl.animate(
+      [{ transform: "scale(1)" }, { transform: "scale(1.2)" }, { transform: "scale(1)" }],
+      { duration: 250 }
+    );
+
+    if (profit > 0) {
+      profitEl.style.color = "#00ff9f";
+      profitEl.style.textShadow = "0 0 12px #00ff9f";
+    } else if (profit < 0) {
+      profitEl.style.color = "#ff4d4d";
+      profitEl.style.textShadow = "0 0 12px #ff4d4d";
+    } else {
+      profitEl.style.color = "#aaa";
+      profitEl.style.textShadow = "none";
+    }
+
+    // ================= WINRATE =================
+    let winrateEl = document.getElementById("winrate");
+    let newWinrate = Number(perf.winrate || 0);
+
+    if (winrateAnimId) cancelAnimationFrame(winrateAnimId);
+
+    let start = lastWinrate;
+    let end = newWinrate;
+    let duration = 700;
+    let startTime = null;
+
+    function animateWinrate(timestamp) {
+      if (!startTime) startTime = timestamp;
+
+      let progress = Math.min((timestamp - startTime) / duration, 1);
+      let value = start + (end - start) * progress;
+
+      winrateEl.innerText = value.toFixed(1) + "%";
+
+      if (value >= 70) {
+        winrateEl.style.color = "#00ff9f";
+        winrateEl.style.textShadow = "0 0 15px #00ff9f";
+      } else if (value >= 50) {
+        winrateEl.style.color = "#00d4ff";
+        winrateEl.style.textShadow = "0 0 15px #00d4ff";
+      } else {
+        winrateEl.style.color = "#ff4d4d";
+        winrateEl.style.textShadow = "0 0 15px #ff4d4d";
+      }
+
+      if (progress < 1) {
+        winrateAnimId = requestAnimationFrame(animateWinrate);
+      }
+    }
+
+    winrateAnimId = requestAnimationFrame(animateWinrate);
+    lastWinrate = newWinrate;
+
   } catch (err) {
-    console.log(err);
-    box.innerHTML = "API ERROR";
+    console.log("API error:", err);
+    document.getElementById("tradeBox").innerHTML =
+      `<p style="color:red">API ERROR</p>`;
   }
+
+  isFetching = false;
 }
 
-setInterval(updateTrade, 2000);
-
-/* PERFORMANCE */  
-async function updatePerformance() {
-  try {
-    let res = await fetch("https://mt5-api-wsgs.onrender.com/trade");
-    let data = await res.json();
-
-if (!data.performance || !data.performance.balance) return;
-
-    document.getElementById("balance").innerText = "$" + data.performance.balance.toFixed(2);
-    document.getElementById("winrate").innerText = data.performance.winrate.toFixed(1) + "%";
-    document.getElementById("tradesToday").innerText = data.performance.tradesToday;
-    document.getElementById("profitToday").innerText = "$" + data.performance.profitToday.toFixed(2);
-  } catch(err) {
-    console.log("Performance fetch error:", err);
-  }
-}
-
-updatePerformance();
-setInterval(updatePerformance, 5000); 
+// 🚀 chạy lần đầu + loop
+updateAll();
+setInterval(updateAll, 3000);
   
 /* === DISCORD LANYARD LIVE (Presence + Activities) === */
 const avatar = document.getElementById("avatar");
