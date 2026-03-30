@@ -676,12 +676,9 @@ async function updateDiscord() {
       avatar.src = `https://cdn.discordapp.com/embed/avatars/0.png`;
     }
 
-    // name + badge
+    // name
 name.textContent = user.username;
-const badges = ["🔥","💎","⚡"];
-name.innerHTML = user.username + " " + badges.join("");
-    tag.textContent = user.global_name || user.username;
-
+    
     // status
     const status = data.discord_status;
     const colors = {
