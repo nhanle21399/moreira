@@ -662,15 +662,23 @@ async function updateTrade() {
   let box = document.getElementById("tradeBox");
 
   try {
-    let res = await fetch("https://mt5-api-wsgs.onrender.com/trade");
-    let data = await res.json();
-let t = data.trades[0];
+  let res = await fetch("https://mt5-api-wsgs.onrender.com/trade");
+  let data = await res.json();
 
-if (!t)
-      box.innerHTML = "<p>No trade</p>";
-      return;
-    }
+  let t = data?.trades?.[0];
 
+  if (!t) {
+    box.innerHTML = "<p>No trade</p>";
+    return;
+  }
+
+  // render UI
+} catch (err) {
+  console.log(err);
+  box.innerHTML = "API ERROR";
+}
+updateTrade();
+  
     box.innerHTML = `
       <p class="live-label">
         <span class="live-dot"></span>
@@ -813,9 +821,6 @@ document.body.addEventListener("click", () => {
     btn.innerText="MUSIC: ON";
   }
 }, { once: true });
-
-setInterval(updateTrade, 5000);
-updateTrade();
 
 </script>
 </body>
