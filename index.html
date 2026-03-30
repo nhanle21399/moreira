@@ -43,6 +43,11 @@ video {
   z-index: -1;
 }
 
+/* TRADE BOX */
+#tradeBox {
+  transition: opacity 0.3s ease;
+}
+  
 /* PARTICLES */
 #particles {
   position: fixed;
@@ -51,6 +56,23 @@ video {
   z-index: 0;
 }
 
+/* JOIN DISCORD */
+.join-btn {
+  margin-top: 20px;
+  padding: 10px;
+  border: 1px solid #5865F2;
+  background: transparent;
+  color: #5865F2;
+  width: 100%;
+  cursor: pointer;
+}
+
+.join-btn:hover {
+  background: #5865F2;
+  color: white;
+  box-shadow: 0 0 20px #5865F2;
+}
+  
 /* INTRO */
 #intro {
   position: fixed;
@@ -78,7 +100,13 @@ video {
   100% {text-shadow: 2px 0 red;}
 }
 
-
+/* STATS TRADE */  
+.stats {
+  margin-top: 15px;
+  font-size: 13px;
+  opacity: 0.8;
+}
+  
 /* Live Trade */  
 .live-label {
   display: flex;
@@ -481,13 +509,22 @@ video {
   <!-- TRADER SIDE -->
   <div class="side">
     <h2>TRADER</h2>
-    <div class="card" id="tradeBox">
-    </div>
+    <div class="card" id="tradeBox"></div>
+
+<div class="card">
+  <canvas id="chart" height="100"></canvas>
+</div>
+    <div class="card stats">
+  <p><b>WINRATE:</b> 78%</p>
+  <p><b>RR:</b> 1:3</p>
+  <p><b>TRADES:</b> 124</p>
+  <p><b>STRATEGY:</b> ICT + FVG</p>
+</div>
     <div class="icons">
-      <a href="https://discord.gg/2W96ej7B" target="_blank" title="Discord">
-        <i class="fab fa-discord"></i>
-      </a>
-    </div>
+  <button class="join-btn">
+    <i class="fab fa-discord"></i> JOIN SIGNAL GROUP
+  </button>
+</div>
   </div>
 
 </div>
@@ -498,7 +535,37 @@ video {
 </audio>
 
 <script>
+
+//* EQUITY */
+const ctx2 = document.getElementById("chart").getContext("2d");
+
+let equity = 1000;
+
+function drawChart() {
+  equity += (Math.random() * 50 - 10);
+
+  ctx2.clearRect(0,0,ctx2.canvas.width,ctx2.canvas.height);
   
+  ctx2.beginPath();
+ const h = ctx2.canvas.height;
+
+ctx2.moveTo(0, h);
+
+for(let i=0;i<30;i++){
+  let y = h - (equity/20) + Math.random()*10;
+  ctx2.lineTo(i*10, y);
+}
+  for(let i=0;i<30;i++){
+    let y = 100 - (equity/20) + Math.random()*10;
+    ctx2.lineTo(i*10, y);
+  }
+
+  ctx2.strokeStyle = "#00ff9f";
+  ctx2.stroke();
+}
+
+setInterval(drawChart, 2000);
+
 // MUSIC
 let music = document.getElementById("music");
 let btn = document.getElementById("musicBtn");
@@ -531,12 +598,14 @@ function enterSite() {
 // CLICK SOUND 
 const clickSound = document.getElementById("clickSound");
 
-document.querySelectorAll("a, button").forEach(el => {
-  el.addEventListener("click", () => {
-    clickSound.currentTime = 0;
-    clickSound.play();
+setTimeout(() => {
+  document.querySelectorAll("a, button").forEach(el => {
+    el.addEventListener("click", () => {
+      clickSound.currentTime = 0;
+      clickSound.play();
+    });
   });
-});
+}, 2000);
   
 // CURSOR
 let cursor = document.getElementById("cursor");
@@ -625,6 +694,9 @@ async function updateTrade() {
   let pnlRaw = (type === "BUY" ? current - entry : entry - current);
   let pnl = (pnlRaw * lot * 100).toFixed(2);
 
+box.style.opacity = 0;
+
+setTimeout(() => {
   box.innerHTML = `
     <p class="live-label">
       <span class="live-dot"></span>
@@ -636,16 +708,14 @@ async function updateTrade() {
     <p style="
       color:${pnl >= 0 ? '#00ff9f' : '#ff4d4d'};
       font-weight:bold;
-      text-shadow: 0 0 8px ${pnl >= 0 ? '#00ff9f' : '#ff4d4d'};
     ">
       PNL: ${pnl >= 0 ? '+' : '-'}$${Math.abs(pnl)}
     </p>
   `;
+  box.style.opacity = 1;
+}, 200);
 }
 
-setInterval(updateTrade, 5000);
-updateTrade();
-  
 /* === DISCORD LANYARD LIVE (Presence + Activities) === */
 const avatar = document.getElementById("avatar");
 const name = document.getElementById("name");
@@ -681,6 +751,10 @@ name.textContent = user.username;
     
     // status
     const status = data.discord_status;
+    document.querySelector(".discord-card").style.boxShadow =
+  status === "online"
+    ? "0 0 20px #43b581"
+    : "none";
     const colors = {
       online: "#43b581",
       idle: "#faa61a",
@@ -731,15 +805,24 @@ name.textContent = user.username;
     console.log("Discord API error:", err);
   }
 }
-  
+
+/* END */
 updateDiscord();
 setInterval(updateDiscord,15000);
 
-document.getElementById("intro").addEventListener("click", () => {
-  console.log("CLICK OK");
-  enterSite();
-});
-  
+document.getElementById("intro").addEventListener("click", enterSite);
+
+document.body.addEventListener("click", () => {
+  if (!isPlaying) {
+    music.play();
+    isPlaying = true;
+    btn.innerText="MUSIC: ON";
+  }
+}, { once: true });
+
+setInterval(updateTrade, 5000);
+updateTrade();
+
 </script>
 </body>
 </html>
