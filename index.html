@@ -78,6 +78,31 @@ video {
   100% {text-shadow: 2px 0 red;}
 }
 
+
+/* Live Trade */  
+.live-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #ff3b3b;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.live-dot {
+  width: 8px;
+  height: 8px;
+  background: #ff3b3b;
+  border-radius: 50%;
+  animation: blink 1.5s infinite;
+}
+
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0.2; }
+  100% { opacity: 1; }
+}
+  
 /* HERO */
 .hero {
   position: absolute;
@@ -394,7 +419,7 @@ video {
 <div class="overlay"></div>
 <canvas id="particles"></canvas>
 <div class="cursor" id="cursor"></div>
-
+  
 <!-- INTRO -->
 <div id="intro">
   <h1>"TALK LESS, DO MORE"</h1>
@@ -465,6 +490,7 @@ video {
 </audio>
 
 <script>
+  
 // MUSIC
 let music = document.getElementById("music");
 let btn = document.getElementById("musicBtn");
@@ -582,7 +608,10 @@ async function updateTrade() {
   let pnl = (pnlRaw * lot * 100).toFixed(2);
 
   box.innerHTML = `
-    <p style="opacity:0.6">LIVE TRADE</p>
+    <p class="live-label">
+      <span class="live-dot"></span>
+      LIVE TRADE
+    </p>
     <p><b>${symbol}</b> • ${type}</p>
     <p>Entry: ${entry.toFixed(2)} (${lot} lot)</p>
     <p>Price: ${current.toFixed(2)}</p>
@@ -591,7 +620,7 @@ async function updateTrade() {
       font-weight:bold;
       text-shadow: 0 0 8px ${pnl >= 0 ? '#00ff9f' : '#ff4d4d'};
     ">
-      PNL: ${pnl}
+      PNL: ${pnl >= 0 ? '+' : '-'}$${Math.abs(pnl)}
     </p>
   `;
 }
