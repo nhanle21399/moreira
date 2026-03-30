@@ -692,25 +692,6 @@ async function updateTrade() {
 }
 
 setInterval(updateTrade, 2000);
-  
-    box.innerHTML = `
-      <p class="live-label">
-        <span class="live-dot"></span>
-        LIVE TRADE
-      </p>
-      <p><b>${t.symbol}</b> • ${t.type}</p>
-      <p>Entry: ${t.entry} (${t.lot} lot)</p>
-      <p>Price: ${t.current}</p>
-      <p style="color:${t.profit >= 0 ? '#00ff9f' : '#ff4d4d'}">
-        PNL: ${t.profit >= 0 ? '+' : ''}$${t.profit}
-      </p>
-    `;
-  } catch {
-    box.innerHTML = "Loading...";
-  }
-}
-
-setInterval(updateTrade, 2000);
 
 /* PERFORMANCE */  
 async function updatePerformance() {
