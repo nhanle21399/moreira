@@ -87,7 +87,7 @@ video {
   color: #ff3b3b;
   font-weight: bold;
   letter-spacing: 1px;
-  animation: blink 1.5s infinite; /* 👈 thêm dòng này */
+  animation: blink 1.5s infinite;
 }
 
 .live-dot {
@@ -286,7 +286,9 @@ video {
 
 /* MOBILE */
 @media(max-width:768px){
-  .container { flex-direction: column; }
+  video { display: none; }
+  #particles { display: none; }
+  .cursor { display: none; }
 }
 
 /* ===== Discord Lanyard rectangle professional (UPDATED) ===== */
@@ -426,6 +428,11 @@ video {
   <h1>"TALK LESS, DO MORE"</h1>
 </div>
 
+<!-- Click sound -->
+<audio id="clickSound">
+  <source src="https://www.myinstants.com/media/sounds/mouse-click.mp3">
+</audio>
+  
 <!-- HERO -->
 <div class="hero" id="hero">
   <h1>MOREIRA</h1>
@@ -521,6 +528,16 @@ function enterSite() {
 });
 }
 
+// CLICK SOUND 
+const clickSound = document.getElementById("clickSound");
+
+document.querySelectorAll("a, button").forEach(el => {
+  el.addEventListener("click", () => {
+    clickSound.currentTime = 0;
+    clickSound.play();
+  });
+});
+  
 // CURSOR
 let cursor = document.getElementById("cursor");
 let mouseX=0, mouseY=0, curX=0, curY=0;
@@ -661,7 +678,8 @@ async function updateDiscord() {
 
     // name + badge
 name.textContent = user.username;
-
+const badges = ["🔥","💎","⚡"];
+name.innerHTML = user.username + " " + badges.join("");
     tag.textContent = user.global_name || user.username;
 
     // status
@@ -673,7 +691,7 @@ name.textContent = user.username;
       offline: "#747f8d"
     };
     statusDot.style.background = colors[status] || "#747f8d";
-
+    statusDot.style.boxShadow = `0 0 10px ${colors[status]}`;
     // activity
     activity.innerHTML = "";
 
