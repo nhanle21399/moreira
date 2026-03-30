@@ -662,22 +662,36 @@ async function updateTrade() {
   let box = document.getElementById("tradeBox");
 
   try {
-  let res = await fetch("https://mt5-api-wsgs.onrender.com/trade");
-  let data = await res.json();
+    let res = await fetch("https://mt5-api-wsgs.onrender.com/trade");
+    let data = await res.json();
 
-  let t = data?.trades?.[0];
+    let t = data?.trades?.[0];
 
-  if (!t) {
-    box.innerHTML = "<p>No trade</p>";
-    return;
+    if (!t) {
+      box.innerHTML = "<p>No trade</p>";
+      return;
+    }
+
+    box.innerHTML = `
+      <p class="live-label">
+        <span class="live-dot"></span>
+        LIVE TRADE
+      </p>
+      <p><b>${t.symbol}</b> • ${t.type}</p>
+      <p>Entry: ${t.entry} (${t.lot} lot)</p>
+      <p>Price: ${t.current}</p>
+      <p style="color:${t.profit >= 0 ? '#00ff9f' : '#ff4d4d'}">
+        PNL: ${t.profit >= 0 ? '+' : ''}$${t.profit}
+      </p>
+    `;
+    
+  } catch (err) {
+    console.log(err);
+    box.innerHTML = "API ERROR";
   }
-
-  // render UI
-} catch (err) {
-  console.log(err);
-  box.innerHTML = "API ERROR";
 }
-updateTrade();
+
+setInterval(updateTrade, 2000);
   
     box.innerHTML = `
       <p class="live-label">
