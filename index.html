@@ -654,88 +654,41 @@ function draw(){
 }
 draw();
 
-// FAKE TRADE
-async function getPrice(symbol) {
-  try {
-    let url = symbol === "XAUUSD"
-      ? "https://api.gold-api.com/price/XAU"
-      : "https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT";
-
-    let res = await fetch(url);
-    let data = await res.json();
-
-    return symbol === "XAUUSD"
-      ? data.price
-      : parseFloat(data.price);
-  } catch {
-    return null;
-  }
-}
-
+/* Real Trade */  
 let currentTrade = null;
 let tradeStartTime = Date.now();
   
 async function updateTrade() {
   let box = document.getElementById("tradeBox");
 
-  let day = new Date().getDay();
-  let symbol = (day === 0 || day === 6) ? "BTCUSDT" : "XAUUSD";
+  try {
+    let res = await fetch("https://mt5-api-xxxx.onrender.com/trade");
+    let t = await res.json();
 
-  let price = await getPrice(symbol);
-  if (!price) return;
+    if (!t.symbol) {
+      box.innerHTML = "<p>No trade</p>";
+      return;
+    }
 
-  // reset trade sau 30s
-  if (Date.now() - tradeStartTime > 30000) {
-    currentTrade = null;
-    tradeStartTime = Date.now();
+    box.innerHTML = `
+      <p class="live-label">
+        <span class="live-dot"></span>
+        LIVE TRADE
+      </p>
+      <p><b>${t.symbol}</b> • ${t.type}</p>
+      <p>Entry: ${t.entry} (${t.lot} lot)</p>
+      <p>Price: ${t.current}</p>
+      <p style="color:${t.profit >= 0 ? '#00ff9f' : '#ff4d4d'}">
+        PNL: ${t.profit >= 0 ? '+' : ''}$${t.profit}
+      </p>
+    `;
+  } catch {
+    box.innerHTML = "Loading...";
   }
-
-  // tạo trade mới
-  if (!currentTrade) {
-    let type = Math.random() > 0.5 ? "BUY" : "SELL";
-    let lot = (Math.random() * 0.5 + 0.01).toFixed(2);
-
-    currentTrade = {
-      symbol,
-      type,
-      lot,
-      entry: price,
-    };
-  }
-
-  if (currentTrade.symbol !== symbol) {
-    currentTrade = null;
-    return;
-  }
-
-  let { type, lot, entry } = currentTrade;
-  let current = price;
-
-  let pnlRaw = (type === "BUY" ? current - entry : entry - current);
-  let pnl = (pnlRaw * lot * 100).toFixed(2);
-
-box.style.opacity = 0;
-
-setTimeout(() => {
-  box.innerHTML = `
-    <p class="live-label">
-      <span class="live-dot"></span>
-      RECENT TRADE
-    </p>
-    <p><b>${symbol}</b> • ${type}</p>
-    <p>Entry: ${entry.toFixed(2)} (${lot} lot)</p>
-    <p>Price: ${current.toFixed(2)}</p>
-    <p style="
-      color:${pnl >= 0 ? '#00ff9f' : '#ff4d4d'};
-      font-weight:bold;
-    ">
-      PNL: ${pnl >= 0 ? '+' : '-'}$${Math.abs(pnl)}
-    </p>
-  `;
-  box.style.opacity = 1;
-}, 200);
 }
 
+setInterval(updateTrade, 2000);
+  
 /* === DISCORD LANYARD LIVE (Presence + Activities) === */
 const avatar = document.getElementById("avatar");
 const name = document.getElementById("name");
